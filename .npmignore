@@ -1,0 +1,63 @@
+# Source code
+/src
+/tests
+*.ts
+*.tsx
+!*.d.ts
+
+# Development files
+.editorconfig
+.eslintrc*
+.gitignore
+.babelrc
+.prettier*
+.github
+tsconfig.json
+jest.config.js
+*.tgz
+
+# Build tools
+/scripts
+/config
+webpack.config.js
+rollup.config.js
+gulpfile.js
+Makefile
+
+# IDE files
+/.idea
+/.vscode
+*.sublime-*
+*.code-workspace
+
+# Logs and debug files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+/logs
+
+# Dependency directories
+/node_modules
+/.pnp
+.pnp.js
+
+# Environment files
+.env*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Misc
+/tmp
+.DS_Store
+Thumbs.db
+coverage/
+.nyc_output
+*.tsbuildinfo
+
+# Keep these out of .gitignore but include in npm package
+!dist/
+!icon.png
+!LICENSE

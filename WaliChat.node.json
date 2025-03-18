@@ -1,0 +1,29 @@
+{
+  "node": "n8n-nodes-base.Wassenger",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": [
+    "Communication",
+    "Productivity",
+    "Marketing & Content",
+    "Sales"
+  ],
+  "resources": {
+    "credentialDocumentation": [
+      {
+        "url": "https://app.wassenger.com/docs"
+      }
+    ],
+    "primaryDocumentation": [
+      {
+        "url": "https://app.wassenger.com/docs"
+      },
+      {
+        "url": "https://app.wassenger.com/help/api-examples"
+      },
+      {
+        "url": "https://app.wassenger.com/help/api-tester"
+      }
+    ]
+  }
+}
