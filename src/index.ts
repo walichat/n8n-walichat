@@ -1,10 +1,8 @@
 import { NodeConnectionType, IExecuteFunctions, INodeType, INodeTypeDescription, INodeExecutionData } from 'n8n-workflow';
-
 import { SendMessage } from './nodes/Messages/SendMessage.node';
 import { RawRequest } from './nodes/RawRequest/RawRequest.node';
 import { UploadFile } from './nodes/Files/UploadFile.node';
 import { Webhook } from './nodes/Webhooks/Webhook.node';
-
 import { ValidateNumbers } from './nodes/Validator/ValidateNumbers.node';
 import { VerifyNumberExists } from './nodes/Validator/VerifyNumberExists.node';
 
@@ -37,7 +35,11 @@ export class WaliChat implements INodeType {
   }
 }
 
-export const nodes = [
+export function index () {
+  return WaliChat
+}
+
+export const nodeTypes = [
   SendMessage,
   UploadFile,
   RawRequest,

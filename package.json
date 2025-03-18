@@ -1,8 +1,8 @@
 {
   "name": "n8n-nodes-walichat",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "description": "n8n plugin for WaliChat",
-  "main": "dist/index.js",
+  "main": "index.js",
   "license": "MIT",
   "homepage": "https://wali.chat",
   "author": {
@@ -45,7 +45,7 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/WaliChatApiKey.credentials.js"
+      "dist/credentials/ApiKey.credentials.js"
     ],
     "nodes": [
       "dist/nodes/Messages/SendMessage.node.js",
@@ -53,8 +53,7 @@
       "dist/nodes/Webhooks/Webhook.node.js",
       "dist/nodes/Files/UploadFile.node.js",
       "dist/nodes/Validator/ValidateNumbers.node.js",
-      "dist/nodes/Validator/VerifyNumberExists.node.js",
-      "dist/index.js"
+      "dist/nodes/Validator/VerifyNumberExists.node.js"
     ]
   }
 }
