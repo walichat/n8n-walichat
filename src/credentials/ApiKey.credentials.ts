@@ -4,7 +4,7 @@ import {
 	INodeProperties,
 } from 'n8n-workflow';
 
-export class WaliChatApiKey implements ICredentialType {
+export class ApiKey implements ICredentialType {
 	name = 'WaliChatApiKey';
 	displayName = 'WaliChat API Key';
 	// Uses the link to this tutorial as an example
