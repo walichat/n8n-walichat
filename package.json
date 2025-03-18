@@ -48,7 +48,9 @@
       "dist/credentials/WaliChatApiKey.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/Messages/SendMessages.node.js",
+      "dist/nodes/Messages/SendMessage.node.js",
+      "dist/nodes/RawRequest/RawRequest.node.js",
+      "dist/nodes/Webhooks/Webhook.node.js",
       "dist/nodes/Files/UploadFile.node.js",
       "dist/nodes/Validator/ValidateNumbers.node.js",
       "dist/nodes/Validator/VerifyNumberExists.node.js",
