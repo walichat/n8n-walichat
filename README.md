@@ -28,7 +28,7 @@ Send WhatsApp messages, upload media files, validate phone numbers, and more - a
 3. Enter `n8n-nodes-walichat` in the "Enter npm package name" field
 4. Agree to the risks of using community nodes: select "I understand the risks of installing unverified code from a public source"
 5. Select **Install**
-6. After installation, restart your n8n instance
+6. You can now use WaliChat's node in your workflows: if you can't see it, restart n8n instance
 
 ### Manual installation
 

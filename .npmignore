@@ -4,6 +4,10 @@
 *.ts
 *.tsx
 !*.d.ts
+/nodes
+/credentials
+/constants
+/utils
 
 # Development files
 .editorconfig
