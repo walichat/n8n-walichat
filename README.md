@@ -11,6 +11,25 @@ Send WhatsApp messages, upload media files, validate phone numbers, and more - a
 
 [WaliChat](https://wali.chat) is a simple and versatile WhatsApp API solution for business messaging to virtually automate anything on WhatsApp.
 
+## Contents
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+  - [Community Nodes (Recommended)](#community-nodes-recommended)
+  - [Manual installation](#manual-installation)
+- [Setup](#setup)
+- [Features](#features)
+  - [Send Text Messages](#send-text-messages)
+  - [Send Multimedia Messages](#send-multimedia-messages)
+  - [Schedule Messages](#schedule-messages)
+  - [Contacts Management](#contacts-management)
+  - [Webhooks & Real-time Events](#webhooks--real-time-events)
+  - [Templates & Automation](#templates--automation)
+  - [Advanced Features](#advanced-features)
+  - [Utility Functions](#utility-functions)
+- [Configuring n8n Webhooks for External Access](#configuring-n8n-webhooks-for-external-access)
+  - [Using ngrok for Public Webhook URLs](#using-ngrok-for-public-webhook-urls)
+
 ## Requirements
 
 - **[Node.js](https://nodejs.org):** v16 or higher
@@ -106,6 +125,153 @@ After installation, restart your n8n instance.
 - Generate QR codes for WhatsApp Web login
 - Monitor device battery and connection status
 - Manage multiple WhatsApp accounts from a single workflow
+
+## Configuring n8n Webhooks for External Access
+
+To receive events from WaliChat or other external services, you'll need to configure n8n with a publicly accessible URL. By default, n8n runs locally and generates webhook URLs using localhost, which external services cannot reach.
+
+#### Understanding Webhook Configuration
+
+n8n creates webhook URLs by combining the protocol, host, and port settings. When running behind a reverse proxy or needing public access, you must manually set the webhook URL.
+
+#### Setting the Webhook URL
+
+##### Temporary Configuration (Session Only)
+
+###### Mac / Linux
+
+```bash
+export WEBHOOK_URL=https://your-domain.com/
+n8n start
+```
+
+###### Windows (Command Prompt)
+
+```cmd
+set WEBHOOK_URL=https://your-domain.com/
+n8n start
+```
+
+###### Windows (PowerShell)
+
+```powershell
+$env:WEBHOOK_URL = "https://your-domain.com/"
+n8n start
+```
+
+##### Permanent Configuration
+
+###### Mac / Linux
+
+Add to your `~/.bashrc`, `~/.zshrc`, or appropriate shell configuration file:
+```bash
+echo 'export WEBHOOK_URL=https://your-domain.com/' >> ~/.bashrc
+source ~/.bashrc
+```
+
+###### Windows
+
+Set a system environment variable through:
+1. Right-click on 'This PC' or 'My Computer' → Properties
+2. Click 'Advanced system settings'
+3. Click 'Environment Variables'
+4. Add a new system variable with:
+   - Name: `WEBHOOK_URL`
+   - Value: `https://your-domain.com/`
+
+#### Verifying Your Webhook Configuration
+
+1. Start n8n after setting the webhook URL
+2. Create a new workflow and add an "WaliChat" node that uses webhooks
+3. The webhook URL should now show your custom domain instead of localhost
+4. External services can now successfully send events to your n8n instance
+
+> **Note**: Ensure your domain is properly set up with SSL and that your network/firewall allows incoming connections to the port your n8n instance is using.
+
+### Using ngrok for Public Webhook URLs
+
+If you're developing locally and need a quick way to expose your n8n instance to the internet for testing webhooks, [ngrok](https://ngrok.com) is a great solution.
+
+#### Installing ngrok
+
+##### Mac
+
+```bash
+# Using Homebrew
+brew install ngrok
+```
+
+[Or download and install manually here](https://ngrok.com/downloads/mac-os)
+
+##### Linux
+
+[Follow the instructions described here](https://ngrok.com/downloads/linux?tab=install)
+
+##### Windows
+
+1. Download ngrok from [https://ngrok.com/download](https://ngrok.com/download)
+2. Extract the zip file
+3. Optionally, add the ngrok executable to your PATH or move it to a directory that's already in your PATH
+
+[Alternatively follow the instructions here](https://ngrok.com/downloads/windows)
+
+#### Setting Up ngrok
+
+1. Sign up for a free account at [https://ngrok.com](https://ngrok.com)
+2. Get your auth token from the ngrok dashboard
+3. Configure ngrok with your auth token:
+   ```bash
+   ngrok authtoken YOUR_AUTH_TOKEN
+   ```
+
+#### Using ngrok with n8n
+
+1. Start your n8n instance first:
+   ```bash
+   n8n start
+   ```
+
+2. In a new terminal window, start ngrok pointing to n8n's default port:
+   ```bash
+   ngrok http 5678
+   ```
+
+3. Ngrok will display a URL like `https://abc123.ngrok.io`
+
+4. Set this as your n8n webhook URL in a new terminal:
+
+   Mac/Linux:
+   ```bash
+   export WEBHOOK_URL=https://abc123.ngrok.io/
+   n8n start
+   ```
+
+   Windows (Command Prompt):
+   ```cmd
+   set WEBHOOK_URL=https://abc123.ngrok.io/
+   n8n start
+   ```
+
+   Windows (PowerShell):
+   ```powershell
+   $env:WEBHOOK_URL = "https://abc123.ngrok.io/"
+   n8n start
+   ```
+
+5. You'll need to restart n8n for the webhook URL changes to take effect
+
+#### Example Workflow
+
+1. Start n8n on port 5678
+2. Launch ngrok: `ngrok http 5678`
+3. Note the ngrok URL (e.g., `https://abc123.ngrok.io`)
+4. Stop n8n
+5. Set the webhook URL environment variable with the ngrok URL
+6. Restart n8n
+7. Create a workflow with a WaliChat webhook trigger
+8. The webhook URL will now use your ngrok domain and be accessible from the internet
+
+> **Note**: Free ngrok sessions expire after a few hours and the URL changes each time you restart ngrok. For production use, consider a permanent solution like a proper domain with a reverse proxy.
 
 ## License
 
