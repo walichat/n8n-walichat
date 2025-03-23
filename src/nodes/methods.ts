@@ -8,7 +8,7 @@ export async function getDevices(this: ILoadOptionsFunctions): Promise<INodeProp
     throw new Error('No WaliChat API Key credentials found!');
   }
   const apiKey = credentials.apiKey as string;
-  const response = await axios.get(`https://api.wali.chat/v1/devices?size=50&token=${apiKey}`);
+  const response = await axios.get(`https://api.wali.chat/v1/devices?size=100&token=${apiKey}`);
   return response.data.map((device: { id: string, alias: string, phone: string }) => ({
     name: `${device.alias} (${device.phone})`,
     value: device.id,
