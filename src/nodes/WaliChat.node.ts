@@ -22,6 +22,7 @@ import { chatFileProperties, executeChatFileOperations } from '../actions/chatFi
 import { outboundMessageProperties, executeOutboundMessageOperations } from '../actions/outboundMessages';
 import { outboundFileProperties, executeOutboundFileOperations } from '../actions/outboundFiles';
 import { webhookProperties, executeWebhookOperations } from '../actions/webhooks';
+import { numberProperties, executeNumberOperations } from '../actions/numbers';
 
 export class WaliChat implements INodeType {
   description: INodeTypeDescription = {
@@ -170,6 +171,7 @@ export class WaliChat implements INodeType {
       ...outboundMessageProperties,
       ...outboundFileProperties,
       ...webhookProperties,
+      ...numberProperties,
       ...otherProperties,
     ],
   };
@@ -229,6 +231,8 @@ export class WaliChat implements INodeType {
           result = await executeOutboundFileOperations.call(this, i);
         } else if (resource === 'webhooks') {
           result = await executeWebhookOperations.call(this, i);
+        } else if (resource === 'numbers') {
+          result = await executeNumberOperations.call(this, i);
         } else if (resource === 'other') {
           result = await executeOtherOperations.call(this, i);
         }

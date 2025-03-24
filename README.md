@@ -7,9 +7,11 @@
 
 This is an [n8n](https://n8n.io) community node that integrates [WaliChat's WhatsApp API](https://app.wali.chat/docs) functionality into your n8n workflows.
 
-Send WhatsApp messages, upload media files, validate phone numbers, and more - all within your automated workflows.
+Send WhatsApp messages, upload media files, validate phone numbers, manage chats, contacts, team members, departments, and more - all within your automated workflows.
 
-[WaliChat](https://wali.chat) is a simple and versatile WhatsApp API solution for business messaging to virtually automate anything on WhatsApp.
+[WaliChat](https://wali.chat) is a versatile WhatsApp Team Chat and API solution for business messaging to automate anything on WhatsApp.
+
+[Check out the API documentation and examples here](https://app.wali.chat/docs)
 
 ## Contents
 
