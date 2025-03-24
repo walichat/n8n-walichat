@@ -8,6 +8,7 @@
 /credentials
 /constants
 /utils
+/coverage
 
 # Development files
 .editorconfig
