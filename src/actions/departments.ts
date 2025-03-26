@@ -42,6 +42,9 @@ export const departmentProperties: INodeProperties[] = [
     type: 'string',
     required: true,
     default: '',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     displayOptions: {
       show: {
         resource: ['departments'],
@@ -190,6 +193,8 @@ export const departmentProperties: INodeProperties[] = [
     required: true,
     typeOptions: {
       multipleValues: true,
+      loadOptionsMethod: 'getTeamAgents',
+      loadOptionsDependsOn: ['deviceId'],
     },
     default: [],
     displayOptions: {
@@ -208,6 +213,10 @@ export const departmentProperties: INodeProperties[] = [
     type: 'string',
     required: true,
     default: '',
+    typeOptions: {
+      loadOptionsMethod: 'getDepartments',
+      loadOptionsDependsOn: ['deviceId'],
+    },
     displayOptions: {
       show: {
         resource: ['departments'],
@@ -355,6 +364,8 @@ export const departmentProperties: INodeProperties[] = [
     required: false,
     typeOptions: {
       multipleValues: true,
+      loadOptionsMethod: 'getTeamAgents',
+      loadOptionsDependsOn: ['deviceId'],
     },
     default: [],
     displayOptions: {

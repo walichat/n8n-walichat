@@ -42,6 +42,9 @@ export const labelProperties: INodeProperties[] = [
     type: 'string',
     required: true,
     default: '',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     displayOptions: {
       show: {
         resource: ['labels'],

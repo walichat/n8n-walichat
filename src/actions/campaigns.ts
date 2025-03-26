@@ -93,6 +93,7 @@ export const campaignProperties: INodeProperties[] = [
         type: 'string',
         typeOptions: {
           multipleValues: true,
+          loadOptionsMethod: 'getDevices',
         },
         default: [],
         description: 'Filter by WhatsApp device IDs',

@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-walichat",
-  "version": "1.0.14",
+  "version": "1.0.16",
   "description": "n8n plugin for WaliChat",
   "main": "index.js",
   "license": "MIT",
@@ -34,7 +34,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && tsc && cp icon.png dist/nodes/icon.png",
     "watch": "tsc --watch",
     "lint": "eslint . --ext .ts",
     "prepublishOnly": "npm run build",

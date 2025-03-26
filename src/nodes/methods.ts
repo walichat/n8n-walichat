@@ -73,3 +73,20 @@ export async function getTeamAgents(this: ILoadOptionsFunctions): Promise<INodeP
     value: agent.id,
   }));
 }
+
+export async function getDepartments(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+  const credentials = await this.getCredentials('apiKey');
+  if (!credentials || !credentials.apiKey) {
+    throw new Error('No WaliChat API Key credentials found!');
+  }
+  const device = this.getNodeParameter('device', 0) as string;
+  if (!device) {
+    throw new Error('Please select WhatsApp device selected');
+  }
+  const apiKey = credentials.apiKey as string;
+  const response = await axios.get(`https://api.wali.chat/v1/devices/${device}/departments?token=${apiKey}`);
+  return response.data.map((department: { id: string, name: string }) => ({
+    name: department.name,
+    value: department.id
+  }));
+}

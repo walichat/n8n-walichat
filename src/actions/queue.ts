@@ -39,7 +39,10 @@ export const queueProperties: INodeProperties[] = [
   {
     displayName: 'WhatsApp Number',
     name: 'deviceId',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     required: true,
     default: '',
     displayOptions: {
@@ -90,7 +93,10 @@ export const queueProperties: INodeProperties[] = [
   {
     displayName: 'Target WhatsApp Number ID',
     name: 'device',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     required: true,
     default: '',
     displayOptions: {

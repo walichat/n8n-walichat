@@ -28,7 +28,7 @@ export class WaliChat implements INodeType {
   description: INodeTypeDescription = {
     displayName: 'WaliChat',
     name: 'walichat',
-    icon: 'file:../../icon.png',
+    icon: 'file:icon.png',
     group: ['output'],
     version: 1,
     subtitle: '={{$parameter["resource"] + ": " + $parameter["operation"]}}',
@@ -189,7 +189,7 @@ export class WaliChat implements INodeType {
         const resource = this.getNodeParameter('resource', i) as string;
 
         let result;
-        if (resource === 'message') {
+        if (resource === 'send-message') {
           result = await executeMessageOperations.call(this, i);
         } else if (resource === 'team') {
           result = await executeTeamOperations.call(this, i);

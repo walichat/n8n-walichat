@@ -1,5 +1,6 @@
 import { IExecuteFunctions, INodeProperties } from 'n8n-workflow';
 import { request } from '../request';
+import { countries } from '../constants/countries';
 
 export const chatContactProperties: INodeProperties[] = [
   {
@@ -72,6 +73,9 @@ export const chatContactProperties: INodeProperties[] = [
     type: 'string',
     required: true,
     default: '',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     displayOptions: {
       show: {
         resource: ['chat-contacts'],
@@ -159,12 +163,12 @@ export const chatContactProperties: INodeProperties[] = [
       {
         displayName: 'Country',
         name: 'country',
-        type: 'string',
-        typeOptions: {
-          multipleValues: true,
-        },
-        default: [],
-        description: 'Filter contacts by country code (ISO 3166-2)',
+        type: 'multiOptions',
+        options: [{ name: 'Any country', value: '' }].concat(countries.map(country => ({ name: country.name + ' ' + country.flag, value: country.code }))),
+        default: '',
+        placeholder: 'Select countries',
+        description: 'Filter contacts by country codes',
+        required: false
       },
       {
         displayName: 'Labels',

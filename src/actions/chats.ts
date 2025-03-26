@@ -109,7 +109,10 @@ export const chatProperties: INodeProperties[] = [
   {
     displayName: 'WhatsApp Number',
     name: 'deviceId',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     required: true,
     default: '',
     displayOptions: {
@@ -391,7 +394,14 @@ export const chatProperties: INodeProperties[] = [
   {
     displayName: 'Group ID',
     name: 'group',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getGroups',
+      loadOptionsDependsOn: ['device', 'targetType'],
+      loadOptionsParameters: {
+        target: 'group',
+      },
+    },
     required: true,
     default: '',
     displayOptions: {
@@ -600,7 +610,11 @@ export const chatProperties: INodeProperties[] = [
   {
     displayName: 'Agent ID',
     name: 'agent',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getTeamAgents',
+      loadOptionsDependsOn: ['device'],
+    },
     required: true,
     default: '',
     displayOptions: {
@@ -630,7 +644,11 @@ export const chatProperties: INodeProperties[] = [
   {
     displayName: 'Department ID',
     name: 'department',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getDepartments',
+      loadOptionsDependsOn: ['device'],
+    },
     required: true,
     default: '',
     displayOptions: {
@@ -896,7 +914,11 @@ export const chatProperties: INodeProperties[] = [
   {
     displayName: 'Agent ID',
     name: 'agent',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getTeamAgents',
+      loadOptionsDependsOn: ['deviceId'],
+    },
     required: true,
     default: '',
     displayOptions: {
@@ -911,7 +933,11 @@ export const chatProperties: INodeProperties[] = [
   {
     displayName: 'Department ID',
     name: 'department',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getDepartments',
+      loadOptionsDependsOn: ['deviceId'],
+    },
     required: false,
     default: '',
     displayOptions: {

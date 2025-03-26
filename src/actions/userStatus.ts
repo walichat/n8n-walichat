@@ -39,7 +39,10 @@ export const userStatusProperties: INodeProperties[] = [
   {
     displayName: 'WhatsApp Number',
     name: 'deviceId',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     required: true,
     default: '',
     displayOptions: {
@@ -395,7 +398,10 @@ export const userStatusProperties: INodeProperties[] = [
   {
     displayName: 'File ID',
     name: 'file',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getFiles',
+    },
     required: true,
     default: '',
     displayOptions: {

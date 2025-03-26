@@ -47,6 +47,9 @@ export const chatMessageProperties: INodeProperties[] = [
     type: 'string',
     required: true,
     default: '',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     displayOptions: {
       show: {
         resource: ['chat-messages'],
@@ -115,6 +118,10 @@ export const chatMessageProperties: INodeProperties[] = [
         displayName: 'Chat ID',
         name: 'chat',
         type: 'string',
+        typeOptions: {
+          loadOptionsMethod: 'getGroups',
+          loadOptionsDependsOn: ['deviceId'],
+        },
         default: '',
         description: 'Filter messages by chat WhatsApp ID (user, group, or channel)',
       },

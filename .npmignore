@@ -61,8 +61,8 @@ Thumbs.db
 coverage/
 .nyc_output
 *.tsbuildinfo
+/icon.png
 
 # Keep these out of .gitignore but include in npm package
 !dist/
-!icon.png
 !LICENSE

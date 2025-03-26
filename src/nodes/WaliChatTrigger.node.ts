@@ -14,7 +14,7 @@ export class WaliChatTrigger implements INodeType {
   description: INodeTypeDescription = {
     displayName: 'WaliChat Trigger',
     name: 'walichatTrigger',
-    icon: 'file:../../icon.png',
+    icon: 'file:icon.png',
     group: ['trigger'],
     version: 1,
     subtitle: '={{$parameter["event"]}}',

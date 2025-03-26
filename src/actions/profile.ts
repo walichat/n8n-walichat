@@ -39,7 +39,10 @@ export const profileProperties: INodeProperties[] = [
   {
     displayName: 'WhatsApp Number',
     name: 'deviceId',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     required: true,
     default: '',
     displayOptions: {

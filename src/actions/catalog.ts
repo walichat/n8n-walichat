@@ -32,6 +32,9 @@ export const catalogProperties: INodeProperties[] = [
     type: 'string',
     required: true,
     default: '',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     displayOptions: {
       show: {
         resource: ['catalog'],

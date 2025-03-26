@@ -179,6 +179,10 @@ export const messageProperties: INodeProperties[] = [
     typeOptions: {
       maxLength: 50,
       loadOptionsMethod: 'getGroups',
+      loadOptionsDependsOn: ['device'],
+      loadOptionsParameters: {
+        target: 'group',
+      },
     },
   },
   {
@@ -943,6 +947,7 @@ export const messageProperties: INodeProperties[] = [
           maxLength: 24,
           minLength: 24,
           loadOptionsMethod: 'getTeamAgents',
+          loadOptionsDependsOn: ['device'],
         },
       },
       // Advanced delivery options

@@ -69,11 +69,18 @@ export const webhookProperties: INodeProperties[] = [
       {
         displayName: 'Device IDs',
         name: 'devices',
-        type: 'string',
+        type: 'options',
         typeOptions: {
+          loadOptionsMethod: 'getDevices',
           multipleValues: true,
         },
         default: [],
+        displayOptions: {
+          show: {
+            resource: ['webhooks'],
+            operation: ['getWebhooks'],
+          },
+        },
         description: 'Filter webhooks by device IDs',
       },
       {
@@ -189,7 +196,10 @@ export const webhookProperties: INodeProperties[] = [
   {
     displayName: 'Device ID (Optional)',
     name: 'device',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     required: false,
     default: '',
     displayOptions: {

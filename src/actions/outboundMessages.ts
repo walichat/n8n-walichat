@@ -128,6 +128,7 @@ export const outboundMessageProperties: INodeProperties[] = [
         type: 'string',
         typeOptions: {
           multipleValues: true,
+          loadOptionsMethod: 'getTeamAgents',
         },
         default: [],
         description: 'Filter messages sent by specific agent IDs',
@@ -191,6 +192,7 @@ export const outboundMessageProperties: INodeProperties[] = [
         type: 'string',
         typeOptions: {
           multipleValues: true,
+          loadOptionsMethod: 'getDevices',
         },
         default: [],
         description: 'Filter by specific device IDs',
@@ -199,6 +201,9 @@ export const outboundMessageProperties: INodeProperties[] = [
         displayName: 'Device',
         name: 'device',
         type: 'string',
+        typeOptions: {
+          loadOptionsMethod: 'getDevices',
+        },
         default: '',
         description: 'Filter by device ID or phone number',
       },
@@ -236,6 +241,10 @@ export const outboundMessageProperties: INodeProperties[] = [
         displayName: 'Group ID',
         name: 'group',
         type: 'string',
+        typeOptions: {
+          loadOptionsMethod: 'getGroups',
+          loadOptionsDependsOn: ['device'],
+        },
         default: '',
         description: 'Filter by target group WhatsApp ID',
       },
@@ -371,6 +380,10 @@ export const outboundMessageProperties: INodeProperties[] = [
         displayName: 'Group ID',
         name: 'group',
         type: 'string',
+        typeOptions: {
+          loadOptionsMethod: 'getGroups',
+          loadOptionsDependsOn: ['device'],
+        },
         default: '',
         description: 'New target group WhatsApp ID',
       },
@@ -392,6 +405,9 @@ export const outboundMessageProperties: INodeProperties[] = [
         displayName: 'Device ID',
         name: 'device',
         type: 'string',
+        typeOptions: {
+          loadOptionsMethod: 'getDevices',
+        },
         default: '',
         description: 'New WhatsApp device ID for message delivery',
       },
@@ -399,6 +415,10 @@ export const outboundMessageProperties: INodeProperties[] = [
         displayName: 'Agent ID',
         name: 'agent',
         type: 'string',
+        typeOptions: {
+          loadOptionsMethod: 'getTeamAgents',
+          loadOptionsDependsOn: ['device'],
+        },
         default: '',
         description: 'New agent ID to send the message on behalf of',
       },

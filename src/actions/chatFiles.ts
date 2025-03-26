@@ -37,6 +37,9 @@ export const chatFileProperties: INodeProperties[] = [
     type: 'string',
     required: true,
     default: '',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     displayOptions: {
       show: {
         resource: ['chat-files'],
@@ -52,6 +55,9 @@ export const chatFileProperties: INodeProperties[] = [
     type: 'string',
     required: true,
     default: '',
+    typeOptions: {
+      loadOptionsMethod: 'getFiles',
+    },
     displayOptions: {
       show: {
         resource: ['chat-files'],
@@ -113,6 +119,7 @@ export const chatFileProperties: INodeProperties[] = [
         type: 'string',
         typeOptions: {
           multipleValues: true,
+          loadOptionsMethod: 'getFiles',
         },
         default: [],
         description: 'Filter files by IDs',

@@ -110,6 +110,7 @@ export const outboundFileProperties: INodeProperties[] = [
         type: 'string',
         typeOptions: {
           multipleValues: true,
+          loadOptionsMethod: 'getFiles',
         },
         default: [],
         description: 'Filter files by specific IDs',
@@ -154,6 +155,9 @@ export const outboundFileProperties: INodeProperties[] = [
         displayName: 'Device ID',
         name: 'device',
         type: 'string',
+        typeOptions: {
+          loadOptionsMethod: 'getDevices',
+        },
         default: '',
         description: 'Filter files by device ID',
       },
@@ -425,6 +429,7 @@ export const outboundFileProperties: INodeProperties[] = [
         type: 'string',
         typeOptions: {
           multipleValues: true,
+          loadOptionsMethod: 'getFiles',
         },
         default: [],
         description: 'IDs of files to delete',
@@ -573,6 +578,9 @@ export const outboundFileProperties: INodeProperties[] = [
     type: 'string',
     required: true,
     default: '',
+    typeOptions: {
+      loadOptionsMethod: 'getFiles',
+    },
     displayOptions: {
       show: {
         resource: ['outbound-files'],

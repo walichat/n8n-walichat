@@ -94,7 +94,10 @@ export const groupProperties: INodeProperties[] = [
   {
     displayName: 'WhatsApp Number',
     name: 'deviceId',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     required: true,
     default: '',
     displayOptions: {
@@ -108,7 +111,14 @@ export const groupProperties: INodeProperties[] = [
   {
     displayName: 'Group ID',
     name: 'groupId',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getGroups',
+      loadOptionsDependsOn: ['deviceId'],
+      loadOptionsParameters: {
+        target: 'group',
+      },
+    },
     required: true,
     default: '',
     displayOptions: {
@@ -538,7 +548,14 @@ export const groupProperties: INodeProperties[] = [
   {
     displayName: 'Group ID to Leave',
     name: 'id',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getGroups',
+      loadOptionsDependsOn: ['deviceId'],
+      loadOptionsParameters: {
+        target: 'group',
+      },
+    },
     required: true,
     default: '',
     displayOptions: {

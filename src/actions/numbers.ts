@@ -67,6 +67,7 @@ export const numberProperties: INodeProperties[] = [
         type: 'string',
         typeOptions: {
           multipleValues: true,
+          loadOptionsMethod: 'getDevices',
         },
         default: [],
         description: 'Filter WhatsApp numbers by specific IDs',
@@ -129,6 +130,9 @@ export const numberProperties: INodeProperties[] = [
     type: 'string',
     required: true,
     default: '',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     displayOptions: {
       show: {
         resource: ['numbers'],

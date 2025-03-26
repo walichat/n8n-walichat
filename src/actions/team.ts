@@ -110,8 +110,17 @@ export const teamProperties: INodeProperties[] = [
       {
         displayName: 'Device ID',
         name: 'device',
-        type: 'string',
+        type: 'options',
+        typeOptions: {
+          loadOptionsMethod: 'getDevices',
+        },
         default: '',
+        displayOptions: {
+          show: {
+            resource: ['team'],
+            operation: ['getTeamUsers'],
+          },
+        },
         description: 'Filter users with access to a specific WhatsApp number',
       },
       {
@@ -343,7 +352,11 @@ export const teamProperties: INodeProperties[] = [
           {
             displayName: 'Reassign To User ID',
             name: 'assign',
-            type: 'string',
+            type: 'options',
+            typeOptions: {
+              loadOptionsMethod: 'getTeamAgents',
+              loadOptionsDependsOn: ['deviceId'],
+            },
             displayOptions: {
               show: {
                 action: ['reassign'],
@@ -369,7 +382,10 @@ export const teamProperties: INodeProperties[] = [
   {
     displayName: 'WhatsApp Number',
     name: 'deviceId',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getDevices',
+    },
     required: true,
     default: '',
     displayOptions: {
@@ -494,7 +510,11 @@ export const teamProperties: INodeProperties[] = [
   {
     displayName: 'User ID',
     name: 'id',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getTeamAgents',
+      loadOptionsDependsOn: ['deviceId'],
+    },
     required: true,
     default: '',
     displayOptions: {
@@ -576,7 +596,11 @@ export const teamProperties: INodeProperties[] = [
   {
     displayName: 'Reassign To User ID',
     name: 'assign',
-    type: 'string',
+    type: 'options',
+    typeOptions: {
+      loadOptionsMethod: 'getTeamAgents',
+      loadOptionsDependsOn: ['deviceId'],
+    },
     required: true,
     default: '',
     displayOptions: {
