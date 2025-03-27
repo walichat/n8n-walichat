@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-walichat",
-  "version": "1.0.16",
+  "version": "1.1.0",
   "description": "n8n plugin for WaliChat",
   "main": "index.js",
   "license": "MIT",
@@ -39,7 +39,7 @@
     "lint": "eslint . --ext .ts",
     "prepublishOnly": "npm run build",
     "dev": "npm run build && n8n start",
-    "dev:copy": "npm run build && cp -r dist/ $HOME/.n8n/nodes/node_modules/n8n-nodes-walichat/ && cp package.json $HOME/.n8n/nodes/node_modules/n8n-nodes-walichat/",
+    "dev:copy": "npm run build && cp -r dist/ $HOME/.n8n/nodes/node_modules/n8n-nodes-walichat/dist && cp package.json $HOME/.n8n/nodes/node_modules/n8n-nodes-walichat/",
     "test": "jest",
     "test:watch": "jest --watch"
   },

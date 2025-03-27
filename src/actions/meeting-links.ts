@@ -33,7 +33,7 @@ export const meetingLinkProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'string',
     required: true,
     default: '',
@@ -316,7 +316,7 @@ export async function executeMeetingLinkOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // GET MEETING LINKS
   if (operation === 'getMeetingLinks') {
@@ -345,7 +345,7 @@ export async function executeMeetingLinkOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/meeting-links`,
+      `/devices/${device}/meeting-links`,
       undefined,
       queryParameters as Record<string, string>,
     );
@@ -376,7 +376,7 @@ export async function executeMeetingLinkOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/meeting-links`,
+      `/devices/${device}/meeting-links`,
       body,
     );
   }
@@ -433,7 +433,7 @@ export async function executeMeetingLinkOperations(
     return request(
       this,
       'DELETE',
-      `/devices/${deviceId}/meeting-links`,
+      `/devices/${device}/meeting-links`,
       body,
     );
   }

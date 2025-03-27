@@ -189,7 +189,7 @@ export class WaliChat implements INodeType {
         const resource = this.getNodeParameter('resource', i) as string;
 
         let result;
-        if (resource === 'send-message') {
+        if (resource === 'send-messages') {
           result = await executeMessageOperations.call(this, i);
         } else if (resource === 'team') {
           result = await executeTeamOperations.call(this, i);

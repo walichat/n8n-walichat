@@ -38,7 +38,7 @@ export const queueProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getDevices',
@@ -248,14 +248,14 @@ export async function executeQueueOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // GET QUEUE STATUS
   if (operation === 'getQueueStatus') {
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/queue`,
+      `/devices/${device}/queue`,
     );
   }
 
@@ -278,7 +278,7 @@ export async function executeQueueOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/queue`,
+      `/devices/${device}/queue`,
       body,
     );
   }
@@ -290,7 +290,7 @@ export async function executeQueueOperations(
     return request(
       this,
       'PATCH',
-      `/devices/${deviceId}/queue`,
+      `/devices/${device}/queue`,
       { device },
     );
   }
@@ -341,7 +341,7 @@ export async function executeQueueOperations(
     return request(
       this,
       'DELETE',
-      `/devices/${deviceId}/queue`,
+      `/devices/${device}/queue`,
       Object.keys(body).length ? body : undefined,
       queryParameters,
     );

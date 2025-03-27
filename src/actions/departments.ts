@@ -38,7 +38,7 @@ export const departmentProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'string',
     required: true,
     default: '',
@@ -194,7 +194,7 @@ export const departmentProperties: INodeProperties[] = [
     typeOptions: {
       multipleValues: true,
       loadOptionsMethod: 'getTeamAgents',
-      loadOptionsDependsOn: ['deviceId'],
+      loadOptionsDependsOn: ['device'],
     },
     default: [],
     displayOptions: {
@@ -215,7 +215,7 @@ export const departmentProperties: INodeProperties[] = [
     default: '',
     typeOptions: {
       loadOptionsMethod: 'getDepartments',
-      loadOptionsDependsOn: ['deviceId'],
+      loadOptionsDependsOn: ['device'],
     },
     displayOptions: {
       show: {
@@ -365,7 +365,7 @@ export const departmentProperties: INodeProperties[] = [
     typeOptions: {
       multipleValues: true,
       loadOptionsMethod: 'getTeamAgents',
-      loadOptionsDependsOn: ['deviceId'],
+      loadOptionsDependsOn: ['device'],
     },
     default: [],
     displayOptions: {
@@ -383,14 +383,14 @@ export async function executeDepartmentOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // GET DEPARTMENTS
   if (operation === 'getDepartments') {
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/departments`,
+      `/devices/${device}/departments`,
     );
   }
 
@@ -430,7 +430,7 @@ export async function executeDepartmentOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/departments`,
+      `/devices/${device}/departments`,
       body,
     );
   }
@@ -470,7 +470,7 @@ export async function executeDepartmentOperations(
     return request(
       this,
       'PATCH',
-      `/devices/${deviceId}/departments`,
+      `/devices/${device}/departments`,
       body,
     );
   }
@@ -482,7 +482,7 @@ export async function executeDepartmentOperations(
     return request(
       this,
       'DELETE',
-      `/devices/${deviceId}/departments`,
+      `/devices/${device}/departments`,
       { department: departmentId },
     );
   }

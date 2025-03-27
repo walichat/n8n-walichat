@@ -38,7 +38,7 @@ export const labelProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp number',
-    name: 'deviceId',
+    name: 'device',
     type: 'string',
     required: true,
     default: '',
@@ -126,19 +126,19 @@ export async function executeLabelOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   if (operation === 'getLabels') {
-    // GET /devices/{deviceId}/labels
+    // GET /devices/{device}/labels
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/labels`,
+      `/devices/${device}/labels`,
     );
   }
 
   if (operation === 'createLabel') {
-    // POST /devices/{deviceId}/labels
+    // POST /devices/{device}/labels
     const name = this.getNodeParameter('name', index) as string;
     const color = this.getNodeParameter('color', index) as string;
     const description = this.getNodeParameter('description', index) as string;
@@ -159,13 +159,13 @@ export async function executeLabelOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/labels`,
+      `/devices/${device}/labels`,
       body,
     );
   }
 
   if (operation === 'updateLabel') {
-    // PATCH /devices/{deviceId}/labels
+    // PATCH /devices/{device}/labels
     const name = this.getNodeParameter('name', index) as string;
     const color = this.getNodeParameter('color', index) as string;
     const description = this.getNodeParameter('description', index) as string;
@@ -186,19 +186,19 @@ export async function executeLabelOperations(
     return request(
       this,
       'PATCH',
-      `/devices/${deviceId}/labels`,
+      `/devices/${device}/labels`,
       body,
     );
   }
 
   if (operation === 'deleteLabel') {
-    // DELETE /devices/{deviceId}/labels
+    // DELETE /devices/{device}/labels
     const name = this.getNodeParameter('name', index) as string;
 
     return request(
       this,
       'DELETE',
-      `/devices/${deviceId}/labels`,
+      `/devices/${device}/labels`,
       { name },
     );
   }

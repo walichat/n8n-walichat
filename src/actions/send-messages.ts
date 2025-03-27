@@ -924,12 +924,16 @@ export const messageProperties: INodeProperties[] = [
         displayName: 'Label',
         name: 'label',
         type: 'string',
+        typeOptions: {
+          loadOptionsMethod: 'getLabels',
+          loadOptionsDependsOn: ['device'],
+        },
         default: '',
         description: 'Custom label to categorize the message',
       },
       {
         displayName: 'Reference ID',
-        name: 'referenceId',
+        name: 'reference',
         type: 'string',
         default: '',
         description: 'Custom reference ID for the message',
@@ -1061,21 +1065,7 @@ export const messageProperties: INodeProperties[] = [
         description: 'Report unread chat messages after delivery (blue double-check). Will not work if read confirmation is disabled in WhatsApp Privacy settings.',
       },
       {
-        displayName: 'Retention Policy',
-        name: 'retentionPolicy',
-        type: 'options',
-        options: [
-          { name: 'Default (Based on plan)', value: '' },
-          { name: 'Never Store', value: 'never' },
-          { name: 'Short Term', value: 'short' },
-          { name: 'Medium Term', value: 'medium' },
-          { name: 'Long Term', value: 'long' },
-        ],
-        default: '',
-        description: 'Message retention policy. Defines how long the message should be stored in the system after processing.',
-      },
-      {
-        displayName: 'Typing Animation',
+        displayName: 'Typing simulation',
         name: 'typing',
         type: 'number',
         default: 0,
@@ -1174,15 +1164,28 @@ export async function executeMessageOperations(this: IExecuteFunctions, itemInde
         }
       }
 
-      // Remove empty options
+      // Ensure critical options are included when they have values
+      const criticalOptions = ['priority', 'agent', 'reference', 'label', 'live', 'enqueue',
+                              'retries', 'sendReadAck', 'typing', 'quote', 'order'];
+
+      // Remove truly empty options
       Object.keys(options).forEach(key => {
-        if (options[key] === '' || options[key] === null ||
-            (typeof options[key] === 'object' && Object.keys(options[key] as object).length === 0)) {
-          delete options[key];
+        // Keep critical options even if they have non-null/non-undefined falsy values
+        if (criticalOptions.includes(key)) {
+          if (options[key] === undefined || options[key] === null) {
+            delete options[key];
+          }
+        } else {
+          // For non-critical options, remove if empty
+          if (options[key] === '' || options[key] === null || options[key] === undefined ||
+              (typeof options[key] === 'object' && Object.keys(options[key] as object).length === 0)) {
+            delete options[key];
+          }
         }
       });
 
-      // Merge options with requestBody
+      // Merge options with requestBody - ensures priority, agent, reference, etc.
+      // are included when they have valid values
       Object.assign(requestBody, options);
     }
 

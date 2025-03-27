@@ -38,7 +38,7 @@ export const profileProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getDevices',
@@ -277,7 +277,7 @@ export async function executeProfileOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // GET PROFILE
   if (operation === 'deviceProfile') {
@@ -291,7 +291,7 @@ export async function executeProfileOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/profile`,
+      `/devices/${device}/profile`,
       undefined,
       queryParameters,
     );
@@ -364,7 +364,7 @@ export async function executeProfileOperations(
     return request(
       this,
       'PATCH',
-      `/devices/${deviceId}/profile`,
+      `/devices/${device}/profile`,
       body,
     );
   }
@@ -379,7 +379,7 @@ export async function executeProfileOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/profile/image`,
+      `/devices/${device}/profile/image`,
       undefined,
       undefined,
       customHeaders,
@@ -406,7 +406,7 @@ export async function executeProfileOperations(
     return request(
       this,
       'PUT',
-      `/devices/${deviceId}/profile/image`,
+      `/devices/${device}/profile/image`,
       body,
     );
   }

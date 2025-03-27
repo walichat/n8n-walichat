@@ -43,7 +43,7 @@ export const chatMessageProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'string',
     required: true,
     default: '',
@@ -120,7 +120,7 @@ export const chatMessageProperties: INodeProperties[] = [
         type: 'string',
         typeOptions: {
           loadOptionsMethod: 'getGroups',
-          loadOptionsDependsOn: ['deviceId'],
+          loadOptionsDependsOn: ['device'],
         },
         default: '',
         description: 'Filter messages by chat WhatsApp ID (user, group, or channel)',
@@ -144,9 +144,10 @@ export const chatMessageProperties: INodeProperties[] = [
         name: 'type',
         type: 'multiOptions',
         options: [
-          { name: 'User', value: 'user' },
+          { name: 'Chat', value: 'chat' },
           { name: 'Group', value: 'group' },
-          { name: 'Broadcast', value: 'broadcast' },
+          { name: 'Channel', value: 'channel' },
+          { name: 'Community', value: 'community' },
         ],
         default: [],
         description: 'Filter messages by chat type',
@@ -337,7 +338,7 @@ export async function executeChatMessageOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // GET CHAT MESSAGES
   if (operation === 'getChatMessages') {
@@ -377,7 +378,7 @@ export async function executeChatMessageOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/messages`,
+      `/chat/${device}/messages`,
       undefined,
       queryParameters as Record<string, string>,
     );
@@ -390,7 +391,7 @@ export async function executeChatMessageOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/messages/${messageId}`,
+      `/chat/${device}/messages/${messageId}`,
     );
   }
 
@@ -401,7 +402,7 @@ export async function executeChatMessageOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/messages/${messageId}/ackinfo`,
+      `/chat/${device}/messages/${messageId}/ackinfo`,
     );
   }
 
@@ -413,7 +414,7 @@ export async function executeChatMessageOperations(
     return request(
       this,
       'PATCH',
-      `/chat/${deviceId}/messages/${messageId}`,
+      `/chat/${device}/messages/${messageId}`,
       { message },
     );
   }
@@ -444,7 +445,7 @@ export async function executeChatMessageOperations(
     return request(
       this,
       'DELETE',
-      `/chat/${deviceId}/messages/${messageId}`,
+      `/chat/${device}/messages/${messageId}`,
       undefined,
       queryParameters,
     );

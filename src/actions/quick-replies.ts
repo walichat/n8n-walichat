@@ -38,7 +38,7 @@ export const quickReplyProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getDevices',
@@ -332,7 +332,7 @@ export async function executeQuickReplyOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // GET QUICK REPLIES
   if (operation === 'getQuickReplies') {
@@ -355,7 +355,7 @@ export async function executeQuickReplyOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/quickReplies`,
+      `/devices/${device}/quickReplies`,
       undefined,
       queryParameters as Record<string, string>,
     );
@@ -396,7 +396,7 @@ export async function executeQuickReplyOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/quickReplies`,
+      `/devices/${device}/quickReplies`,
       body,
     );
   }
@@ -442,7 +442,7 @@ export async function executeQuickReplyOperations(
     return request(
       this,
       'PATCH',
-      `/devices/${deviceId}/quickReplies`,
+      `/devices/${device}/quickReplies`,
       body,
     );
   }
@@ -456,7 +456,7 @@ export async function executeQuickReplyOperations(
       return request(
         this,
         'DELETE',
-        `/devices/${deviceId}/quickReplies`,
+        `/devices/${device}/quickReplies`,
         [{ all: true }],
       );
     } else {
@@ -489,7 +489,7 @@ export async function executeQuickReplyOperations(
       return request(
         this,
         'DELETE',
-        `/devices/${deviceId}/quickReplies`,
+        `/devices/${device}/quickReplies`,
         items,
       );
     }

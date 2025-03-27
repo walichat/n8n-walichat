@@ -59,7 +59,7 @@ export const channelProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'string',
     required: true,
     default: '',
@@ -473,7 +473,7 @@ export async function executeChannelOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // GET CHANNELS
   if (operation === 'getDeviceChannels') {
@@ -490,7 +490,7 @@ export async function executeChannelOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/channels`,
+      `/devices/${device}/channels`,
       undefined,
       queryParameters,
     );
@@ -503,7 +503,7 @@ export async function executeChannelOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/channels/${channelId}`,
+      `/devices/${device}/channels/${channelId}`,
     );
   }
 
@@ -544,7 +544,7 @@ export async function executeChannelOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/channels`,
+      `/devices/${device}/channels`,
       body,
     );
   }
@@ -575,7 +575,7 @@ export async function executeChannelOperations(
     return request(
       this,
       'PATCH',
-      `/devices/${deviceId}/channels/${channelId}`,
+      `/devices/${device}/channels/${channelId}`,
       body,
     );
   }
@@ -601,7 +601,7 @@ export async function executeChannelOperations(
     return request(
       this,
       'PUT',
-      `/devices/${deviceId}/channels/${channelId}/image`,
+      `/devices/${device}/channels/${channelId}/image`,
       body,
     );
   }
@@ -613,7 +613,7 @@ export async function executeChannelOperations(
     return request(
       this,
       'DELETE',
-      `/devices/${deviceId}/channels/${channelId}`,
+      `/devices/${device}/channels/${channelId}`,
     );
   }
 
@@ -637,7 +637,7 @@ export async function executeChannelOperations(
     return request(
       this,
       'PUT',
-      `/devices/${deviceId}/channels`,
+      `/devices/${device}/channels`,
       body,
     );
   }
@@ -670,7 +670,7 @@ export async function executeChannelOperations(
     return request(
       this,
       'PATCH',
-      `/devices/${deviceId}/channels`,
+      `/devices/${device}/channels`,
       body,
     );
   }

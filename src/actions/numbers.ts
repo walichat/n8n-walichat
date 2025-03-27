@@ -14,27 +14,27 @@ export const numberProperties: INodeProperties[] = [
     },
     options: [
       {
-        name: 'Get WhatsApp Numbers',
+        name: 'Get Numbers',
         value: 'getNumbers',
         description: 'Get a list of all WhatsApp numbers in your account',
       },
       {
-        name: 'Get WhatsApp Number Details',
+        name: 'Get Number by ID',
         value: 'getNumberById',
         description: 'Get details of a specific WhatsApp number',
       },
       {
-        name: 'Create WhatsApp Number',
+        name: 'Create Number',
         value: 'createNumber',
         description: 'Create a new WhatsApp number with subscription plan',
       },
       {
-        name: 'Update WhatsApp Number',
+        name: 'Update Number',
         value: 'updateNumber',
         description: 'Update WhatsApp number settings',
       },
       {
-        name: 'Delete WhatsApp Number',
+        name: 'Delete Number',
         value: 'deleteNumber',
         description: 'Delete a WhatsApp number',
       },
@@ -126,7 +126,7 @@ export const numberProperties: INodeProperties[] = [
   // PARAMS FOR OPERATIONS THAT REQUIRE NUMBER ID
   {
     displayName: 'WhatsApp Number ID',
-    name: 'deviceId',
+    name: 'device',
     type: 'string',
     required: true,
     default: '',
@@ -482,7 +482,7 @@ export async function executeNumberOperations(
 
   // GET NUMBER BY ID
   if (operation === 'getNumberById') {
-    const deviceId = this.getNodeParameter('deviceId', index) as string;
+    const device = this.getNodeParameter('device', index) as string;
     const includeOptions = this.getNodeParameter('includeOptions', index, {}) as {
       include?: string[];
       exclude?: string[];
@@ -501,7 +501,7 @@ export async function executeNumberOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}`,
+      `/devices/${device}`,
       undefined,
       queryParameters,
     );
@@ -550,7 +550,7 @@ export async function executeNumberOperations(
 
   // UPDATE NUMBER
   if (operation === 'updateNumber') {
-    const deviceId = this.getNodeParameter('deviceId', index) as string;
+    const device = this.getNodeParameter('device', index) as string;
     const updateFields = this.getNodeParameter('updateFields', index, {}) as {
       enable?: boolean;
       alias?: string;
@@ -587,25 +587,25 @@ export async function executeNumberOperations(
     return request(
       this,
       'PATCH',
-      `/devices/${deviceId}`,
+      `/devices/${device}`,
       body,
     );
   }
 
   // DELETE NUMBER
   if (operation === 'deleteNumber') {
-    const deviceId = this.getNodeParameter('deviceId', index) as string;
+    const device = this.getNodeParameter('device', index) as string;
 
     return request(
       this,
       'DELETE',
-      `/devices/${deviceId}`,
+      `/devices/${device}`,
     );
   }
 
   // DELETE CHATS
   if (operation === 'deleteChats') {
-    const deviceId = this.getNodeParameter('deviceId', index) as string;
+    const device = this.getNodeParameter('device', index) as string;
     const phoneNumbers = this.getNodeParameter('phoneNumbers', index, []) as string[];
 
     if (!phoneNumbers || phoneNumbers.length === 0) {
@@ -619,7 +619,7 @@ export async function executeNumberOperations(
     return request(
       this,
       'DELETE',
-      `/devices/${deviceId}/chats`,
+      `/devices/${device}/chats`,
       phoneNumbers,
     );
   }

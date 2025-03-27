@@ -54,12 +54,12 @@ export const chatProperties: INodeProperties[] = [
         description: 'Get participants in a group chat',
       },
       {
-        name: 'Assign Chat Agent',
+        name: 'Assign Chat',
         value: 'assignChatAgent',
         description: 'Assign chat to a team member or department',
       },
       {
-        name: 'Unassign Chat Agent',
+        name: 'Unassign Chat',
         value: 'unassignChatAgent',
         description: 'Unassign chat from team member or department',
       },
@@ -108,7 +108,7 @@ export const chatProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getDevices',
@@ -176,6 +176,8 @@ export const chatProperties: INodeProperties[] = [
           { name: 'Pending', value: 'pending' },
           { name: 'Active', value: 'active' },
           { name: 'Resolved', value: 'resolved' },
+          { name: 'Archived', value: 'archived' },
+          { name: 'Muted', value: 'muted' },
         ],
         default: [],
         description: 'Filter chats by status',
@@ -213,9 +215,10 @@ export const chatProperties: INodeProperties[] = [
         name: 'type',
         type: 'multiOptions',
         options: [
-          { name: 'User', value: 'user' },
+          { name: 'Chat', value: 'chat' },
           { name: 'Group', value: 'group' },
           { name: 'Channel', value: 'channel' },
+          { name: 'Community', value: 'community' },
         ],
         default: [],
         description: 'Filter chats by type',
@@ -226,6 +229,8 @@ export const chatProperties: INodeProperties[] = [
         type: 'string',
         typeOptions: {
           multipleValues: true,
+          loadOptionsMethod: 'getTeamAgents',
+          loadOptionsDependsOn: ['device']
         },
         default: [],
         description: 'Filter chats assigned to specific agents',
@@ -243,6 +248,8 @@ export const chatProperties: INodeProperties[] = [
         type: 'string',
         typeOptions: {
           multipleValues: true,
+          loadOptionsMethod: 'getLabels',
+          loadOptionsDependsOn: ['device']
         },
         default: [],
         description: 'Filter chats by labels. Use * to include any labeled chat.',
@@ -702,7 +709,11 @@ export const chatProperties: INodeProperties[] = [
       {
         displayName: 'Author ID',
         name: 'author',
-        type: 'string',
+        type: 'options',
+        typeOptions: {
+          loadOptionsMethod: 'getTeamAgents',
+          loadOptionsDependsOn: ['device'],
+        },
         default: '',
         description: 'Optional author user ID that creates the note',
       },
@@ -917,7 +928,7 @@ export const chatProperties: INodeProperties[] = [
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getTeamAgents',
-      loadOptionsDependsOn: ['deviceId'],
+      loadOptionsDependsOn: ['device'],
     },
     required: true,
     default: '',
@@ -936,7 +947,7 @@ export const chatProperties: INodeProperties[] = [
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getDepartments',
-      loadOptionsDependsOn: ['deviceId'],
+      loadOptionsDependsOn: ['device'],
     },
     required: false,
     default: '',
@@ -956,7 +967,7 @@ export async function executeChatOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // GET DEVICE CHATS
   if (operation === 'getDeviceChats') {
@@ -990,7 +1001,7 @@ export async function executeChatOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/chats`,
+      `/chat/${device}/chats`,
       undefined,
       queryParameters as Record<string, string>,
     );
@@ -1019,7 +1030,7 @@ export async function executeChatOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/chats/${chatId}`,
+      `/chat/${device}/chats/${chatId}`,
       undefined,
       stringifiedQueryParams,
     );
@@ -1055,7 +1066,7 @@ export async function executeChatOperations(
     return request(
       this,
       'POST',
-      `/chat/${deviceId}/typing`,
+      `/chat/${device}/typing`,
       body,
     );
   }
@@ -1072,7 +1083,7 @@ export async function executeChatOperations(
     return request(
       this,
       'POST',
-      `/chat/${deviceId}/sync`,
+      `/chat/${device}/sync`,
       undefined,
       queryParameters,
     );
@@ -1091,7 +1102,7 @@ export async function executeChatOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/chats/${chatId}/sync`,
+      `/chat/${device}/chats/${chatId}/sync`,
       undefined,
       queryParameters,
     );
@@ -1105,7 +1116,7 @@ export async function executeChatOperations(
     return request(
       this,
       'PATCH',
-      `/chat/${deviceId}/chats/${chatId}/unread`,
+      `/chat/${device}/chats/${chatId}/unread`,
       { unread },
     );
   }
@@ -1118,7 +1129,7 @@ export async function executeChatOperations(
     return request(
       this,
       'PATCH',
-      `/chat/${deviceId}/chats/${chatId}/status`,
+      `/chat/${device}/chats/${chatId}/status`,
       { status },
     );
   }
@@ -1161,7 +1172,7 @@ export async function executeChatOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/chats/${chatId}/participants`,
+      `/chat/${device}/chats/${chatId}/participants`,
       undefined,
       stringifiedQueryParams,
     );
@@ -1196,7 +1207,7 @@ export async function executeChatOperations(
     return request(
       this,
       'PATCH',
-      `/chat/${deviceId}/chats/${chatId}/owner`,
+      `/chat/${device}/chats/${chatId}/owner`,
       body,
     );
   }
@@ -1208,7 +1219,7 @@ export async function executeChatOperations(
     return request(
       this,
       'DELETE',
-      `/chat/${deviceId}/chats/${chatId}/owner`,
+      `/chat/${device}/chats/${chatId}/owner`,
     );
   }
 
@@ -1235,7 +1246,7 @@ export async function executeChatOperations(
     return request(
       this,
       'POST',
-      `/chat/${deviceId}/chats/${chatId}/notes`,
+      `/chat/${device}/chats/${chatId}/notes`,
       body,
     );
   }
@@ -1248,7 +1259,7 @@ export async function executeChatOperations(
     return request(
       this,
       'DELETE',
-      `/chat/${deviceId}/chats/${chatId}/notes`,
+      `/chat/${device}/chats/${chatId}/notes`,
       { ids },
     );
   }
@@ -1270,7 +1281,7 @@ export async function executeChatOperations(
     return request(
       this,
       'PATCH',
-      `/chat/${deviceId}/chats/${chatId}/labels`,
+      `/chat/${device}/chats/${chatId}/labels`,
       labels,
       queryParameters,
     );
@@ -1295,7 +1306,7 @@ export async function executeChatOperations(
     return request(
       this,
       'PATCH',
-      `/chat/${deviceId}/chats/${chatId}/attributes`,
+      `/chat/${device}/chats/${chatId}/attributes`,
       body,
     );
   }
@@ -1307,7 +1318,7 @@ export async function executeChatOperations(
     return request(
       this,
       'PUT',
-      `/chat/${deviceId}/chats/${chatId}/archive`,
+      `/chat/${device}/chats/${chatId}/archive`,
     );
   }
 
@@ -1318,7 +1329,7 @@ export async function executeChatOperations(
     return request(
       this,
       'DELETE',
-      `/chat/${deviceId}/chats/${chatId}/archive`,
+      `/chat/${device}/chats/${chatId}/archive`,
     );
   }
 
@@ -1341,7 +1352,7 @@ export async function executeChatOperations(
     return request(
       this,
       'DELETE',
-      `/chat/${deviceId}/chats/${chatId}`,
+      `/chat/${device}/chats/${chatId}`,
       Object.keys(body).length > 0 ? body : undefined,
     );
   }
@@ -1392,7 +1403,7 @@ export async function executeChatOperations(
     return request(
       this,
       'PATCH',
-      `/chat/${deviceId}/chats`,
+      `/chat/${device}/chats`,
       body,
     );
   }

@@ -14,14 +14,14 @@ export const sessionProperties: INodeProperties[] = [
     },
     options: [
       {
-        name: 'Sync Session',
+        name: 'Sync session',
         value: 'syncSession',
         description: 'Force WhatsApp session status synchronization',
       },
       {
-        name: 'Start Device',
+        name: 'Start session',
         value: 'startDevice',
-        description: 'Force to start device session during non-operative hours',
+        description: 'Force to start number session during non-operative hours',
       },
       {
         name: 'Scan QR',
@@ -29,17 +29,17 @@ export const sessionProperties: INodeProperties[] = [
         description: 'Get the QR image to scan for linking the WhatsApp session',
       },
       {
-        name: 'Reset Device',
+        name: 'Reset session',
         value: 'resetDevice',
         description: 'Recreate device session, optionally deleting queued messages and stored data',
       },
       {
-        name: 'Reboot Device',
+        name: 'Reboot session',
         value: 'rebootDevice',
         description: 'Reboot the WhatsApp session without deleting data',
       },
       {
-        name: 'Get Device Health',
+        name: 'Get session health',
         value: 'deviceHealth',
         description: 'Get device session health status and information',
       },
@@ -53,7 +53,7 @@ export const sessionProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getDevices',
@@ -234,14 +234,14 @@ export async function executeSessionOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // SYNC SESSION
   if (operation === 'syncSession') {
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/sync`,
+      `/devices/${device}/sync`,
     );
   }
 
@@ -257,7 +257,7 @@ export async function executeSessionOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/start`,
+      `/devices/${device}/start`,
       undefined,
       queryParameters,
     );
@@ -286,7 +286,7 @@ export async function executeSessionOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/scan`,
+      `/devices/${device}/scan`,
       undefined,
       queryParameters,
       customHeaders,
@@ -315,7 +315,7 @@ export async function executeSessionOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/reset`,
+      `/devices/${device}/reset`,
       undefined,
       queryParameters,
     );
@@ -343,7 +343,7 @@ export async function executeSessionOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/reboot`,
+      `/devices/${device}/reboot`,
       undefined,
       queryParameters,
     );
@@ -354,7 +354,7 @@ export async function executeSessionOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/health`,
+      `/devices/${device}/health`,
     );
   }
 
@@ -379,7 +379,7 @@ export async function executeSessionOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/authcode`,
+      `/devices/${device}/authcode`,
       Object.keys(body).length ? body : undefined,
       queryParameters,
     );

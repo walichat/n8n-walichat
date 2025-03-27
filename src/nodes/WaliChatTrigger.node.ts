@@ -128,7 +128,7 @@ export class WaliChatTrigger implements INodeType {
   async webhookCreate(this: IHookFunctions): Promise<boolean> {
     const webhookUrl = this.getNodeWebhookUrl('default');
     const webhookName = this.getNodeParameter('webhookName') as string;
-    const deviceId = this.getNodeParameter('deviceId', '') as string;
+    const device = this.getNodeParameter('device', '') as string;
     const events = this.getNodeParameter('events', []) as string[];
 
     if (!webhookUrl) {
@@ -139,18 +139,43 @@ export class WaliChatTrigger implements INodeType {
       throw new Error('At least one event must be selected');
     }
 
+    // Before registering a new webhook, delete any existing one
+    const nodeData = this.getWorkflowStaticData('node');
+    const webhookId = (nodeData?.webhookId as string) || '';
+    if (webhookId) {
+      try {
+        const credentials = await this.getCredentials('apiKey');
+        const apiKey = credentials.apiKey as string;
+
+        await axios.delete(`https://api.wali.chat/v1/webhooks/${webhookId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+          },
+        });
+      } catch (error) {
+        // If the webhook doesn't exist anymore, consider the deletion successful
+        if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
+          // Webhook doesn't exist, which is fine
+        } else {
+          console.error('Error deleting existing WaliChat webhook:', error);
+          // Continue anyway to create the new webhook
+        }
+      }
+    }
+
     try {
       const credentials = await this.getCredentials('apiKey');
       const apiKey = credentials.apiKey as string;
 
       const requestBody: IDataObject = {
-        name: webhookName,
+        name: `n8n: ${webhookName}`,
         url: webhookUrl,
         events,
       };
 
-      if (deviceId) {
-        requestBody.device = deviceId;
+      if (device) {
+        requestBody.device = device;
       }
 
       const response = await axios.post('https://api.wali.chat/v1/webhooks', requestBody, {

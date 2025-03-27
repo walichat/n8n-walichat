@@ -33,7 +33,7 @@ export const chatFileProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'string',
     required: true,
     default: '',
@@ -195,7 +195,7 @@ export async function executeChatFileOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // GET DEVICE FILES
   if (operation === 'getDeviceFiles') {
@@ -226,7 +226,7 @@ export async function executeChatFileOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/files`,
+      `/chat/${device}/files`,
       undefined,
       queryParameters as Record<string, string>,
     );
@@ -239,7 +239,7 @@ export async function executeChatFileOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/files/${fileId}`,
+      `/chat/${device}/files/${fileId}`,
     );
   }
 
@@ -256,7 +256,7 @@ export async function executeChatFileOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/files/${fileId}/download`,
+      `/chat/${device}/files/${fileId}/download`,
       undefined,
       undefined,
       customHeaders,

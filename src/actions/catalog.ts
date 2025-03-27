@@ -28,7 +28,7 @@ export const catalogProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'string',
     required: true,
     default: '',
@@ -121,7 +121,7 @@ export async function executeCatalogOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // GET MY CATALOG
   if (operation === 'getCatalog') {
@@ -143,7 +143,7 @@ export async function executeCatalogOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/catalog`,
+      `/devices/${device}/catalog`,
       undefined,
       queryParameters,
     );
@@ -168,7 +168,7 @@ export async function executeCatalogOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/catalog`,
+      `/devices/${device}/catalog`,
       body,
     );
   }

@@ -93,7 +93,7 @@ export const groupProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getDevices',
@@ -114,7 +114,7 @@ export const groupProperties: INodeProperties[] = [
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getGroups',
-      loadOptionsDependsOn: ['deviceId'],
+      loadOptionsDependsOn: ['device'],
       loadOptionsParameters: {
         target: 'group',
       },
@@ -551,7 +551,7 @@ export const groupProperties: INodeProperties[] = [
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getGroups',
-      loadOptionsDependsOn: ['deviceId'],
+      loadOptionsDependsOn: ['device'],
       loadOptionsParameters: {
         target: 'group',
       },
@@ -586,7 +586,7 @@ export async function executeGroupOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // GET GROUPS
   if (operation === 'getDeviceGroupChats') {
@@ -603,7 +603,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/groups`,
+      `/devices/${device}/groups`,
       undefined,
       queryParameters as Record<string, string>,
     );
@@ -616,7 +616,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/groups/${groupId}`,
+      `/devices/${device}/groups/${groupId}`,
     );
   }
 
@@ -686,7 +686,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/groups`,
+      `/devices/${device}/groups`,
       body,
     );
   }
@@ -741,7 +741,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'PATCH',
-      `/devices/${deviceId}/groups/${groupId}`,
+      `/devices/${device}/groups/${groupId}`,
       body,
     );
   }
@@ -767,7 +767,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'PUT',
-      `/devices/${deviceId}/groups/${groupId}/image`,
+      `/devices/${device}/groups/${groupId}/image`,
       body,
     );
   }
@@ -792,7 +792,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/groups/${groupId}/participants`,
+      `/devices/${device}/groups/${groupId}/participants`,
       { participants },
     );
   }
@@ -817,7 +817,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'PATCH',
-      `/devices/${deviceId}/groups/${groupId}/participants`,
+      `/devices/${device}/groups/${groupId}/participants`,
       { participants },
     );
   }
@@ -830,7 +830,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'DELETE',
-      `/devices/${deviceId}/groups/${groupId}/participants`,
+      `/devices/${device}/groups/${groupId}/participants`,
       phones,
     );
   }
@@ -842,7 +842,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/groups/${groupId}/members`,
+      `/devices/${device}/groups/${groupId}/members`,
     );
   }
 
@@ -866,7 +866,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/groups/${groupId}/members`,
+      `/devices/${device}/groups/${groupId}/members`,
       body,
     );
   }
@@ -891,7 +891,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'DELETE',
-      `/devices/${deviceId}/groups/${groupId}/members`,
+      `/devices/${device}/groups/${groupId}/members`,
       body,
     );
   }
@@ -903,7 +903,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/groups/${groupId}/invite`,
+      `/devices/${device}/groups/${groupId}/invite`,
     );
   }
 
@@ -914,7 +914,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'DELETE',
-      `/devices/${deviceId}/groups/${groupId}/invite`,
+      `/devices/${device}/groups/${groupId}/invite`,
     );
   }
 
@@ -938,7 +938,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'PUT',
-      `/devices/${deviceId}/groups`,
+      `/devices/${device}/groups`,
       body,
     );
   }
@@ -951,7 +951,7 @@ export async function executeGroupOperations(
     return request(
       this,
       'DELETE',
-      `/devices/${deviceId}/groups`,
+      `/devices/${device}/groups`,
       {
         id,
         remove,

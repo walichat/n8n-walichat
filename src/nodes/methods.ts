@@ -90,3 +90,22 @@ export async function getDepartments(this: ILoadOptionsFunctions): Promise<INode
     value: department.id
   }));
 }
+
+export async function getLabels(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+  // Implement the call
+  // Retrieve the credentials object declared on the node
+  const credentials = await this.getCredentials('apiKey');
+  if (!credentials || !credentials.apiKey) {
+    throw new Error('No WaliChat API Key credentials found!');
+  }
+  const device = this.getNodeParameter('device', 0) as string;
+  if (!device) {
+    throw new Error('Please select WhatsApp device selected');
+  }
+  const apiKey = credentials.apiKey as string;
+  const response = await axios.get(`https://api.wali.chat/v1/devices/${device}/labels?size=100&token=${apiKey}`);
+  return response.data.filter((label: { scope: string }) => label.scope === 'chat').map((label: { id: string, name: string, scope: string }) => ({
+    name: label.name,
+    value: label.name
+  }));
+}

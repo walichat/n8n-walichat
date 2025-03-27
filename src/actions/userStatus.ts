@@ -38,7 +38,7 @@ export const userStatusProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getDevices',
@@ -154,18 +154,6 @@ export const userStatusProperties: INodeProperties[] = [
         description: 'Return status sent from a given phone number or WhatsApp WID',
       },
       {
-        displayName: 'Chat Type',
-        name: 'type',
-        type: 'multiOptions',
-        options: [
-          { name: 'User', value: 'user' },
-          { name: 'Group', value: 'group' },
-          { name: 'Broadcast', value: 'broadcast' },
-        ],
-        default: [],
-        description: 'Filter messages by chat type',
-      },
-      {
         displayName: 'Reference',
         name: 'reference',
         type: 'string',
@@ -173,8 +161,8 @@ export const userStatusProperties: INodeProperties[] = [
         description: 'Filter messages by reference field exact match',
       },
       {
-        displayName: 'Kind',
-        name: 'kind',
+        displayName: 'Type',
+        name: 'type',
         type: 'multiOptions',
         options: [
           { name: 'Text', value: 'text' },
@@ -641,7 +629,7 @@ export async function executeUserStatusOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // GET USER STATUS BY ID
   if (operation === 'getUserStatusById') {
@@ -650,7 +638,7 @@ export async function executeUserStatusOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/status/${statusId}`,
+      `/chat/${device}/status/${statusId}`,
     );
   }
 
@@ -690,7 +678,7 @@ export async function executeUserStatusOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/status`,
+      `/chat/${device}/status`,
       undefined,
       queryParameters as Record<string, string>,
     );
@@ -784,7 +772,7 @@ export async function executeUserStatusOperations(
     return request(
       this,
       'POST',
-      `/chat/${deviceId}/status`,
+      `/chat/${device}/status`,
       body,
     );
   }
@@ -812,7 +800,7 @@ export async function executeUserStatusOperations(
     return request(
       this,
       'DELETE',
-      `/chat/${deviceId}/status`,
+      `/chat/${device}/status`,
       body,
     );
   }

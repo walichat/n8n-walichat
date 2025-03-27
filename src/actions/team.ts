@@ -355,7 +355,7 @@ export const teamProperties: INodeProperties[] = [
             type: 'options',
             typeOptions: {
               loadOptionsMethod: 'getTeamAgents',
-              loadOptionsDependsOn: ['deviceId'],
+              loadOptionsDependsOn: ['device'],
             },
             displayOptions: {
               show: {
@@ -381,7 +381,7 @@ export const teamProperties: INodeProperties[] = [
   // DEVICE TEAM OPERATIONS - COMMON PARAMETER
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getDevices',
@@ -513,7 +513,7 @@ export const teamProperties: INodeProperties[] = [
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getTeamAgents',
-      loadOptionsDependsOn: ['deviceId'],
+      loadOptionsDependsOn: ['device'],
     },
     required: true,
     default: '',
@@ -599,7 +599,7 @@ export const teamProperties: INodeProperties[] = [
     type: 'options',
     typeOptions: {
       loadOptionsMethod: 'getTeamAgents',
-      loadOptionsDependsOn: ['deviceId'],
+      loadOptionsDependsOn: ['device'],
     },
     required: true,
     default: '',
@@ -760,18 +760,18 @@ export async function executeTeamOperations(
 
   // GET DEVICE TEAM MEMBERS
   if (operation === 'getDeviceTeamMembers') {
-    const deviceId = this.getNodeParameter('deviceId', index) as string;
+    const device = this.getNodeParameter('device', index) as string;
 
     return request(
       this,
       'GET',
-      `/devices/${deviceId}/team`,
+      `/devices/${device}/team`,
     );
   }
 
   // CREATE DEVICE USER
   if (operation === 'createDeviceUser') {
-    const deviceId = this.getNodeParameter('deviceId', index) as string;
+    const device = this.getNodeParameter('device', index) as string;
     const displayName = this.getNodeParameter('displayName', index) as string;
     const email = this.getNodeParameter('email', index) as string;
     const password = this.getNodeParameter('password', index) as string;
@@ -791,27 +791,27 @@ export async function executeTeamOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/team`,
+      `/devices/${device}/team`,
       body,
     );
   }
 
   // GRANT DEVICE USER ACCESS
   if (operation === 'grantDeviceUserAccess') {
-    const deviceId = this.getNodeParameter('deviceId', index) as string;
+    const device = this.getNodeParameter('device', index) as string;
     const id = this.getNodeParameter('id', index) as string;
 
     return request(
       this,
       'PATCH',
-      `/devices/${deviceId}/team`,
+      `/devices/${device}/team`,
       { id },
     );
   }
 
   // REVOKE DEVICE USER ACCESS
   if (operation === 'revokeDeviceUserAccess') {
-    const deviceId = this.getNodeParameter('deviceId', index) as string;
+    const device = this.getNodeParameter('device', index) as string;
     const identifierType = this.getNodeParameter('identifierType', index) as string;
     const action = this.getNodeParameter('action', index) as string;
     const remove = this.getNodeParameter('remove', index, false) as boolean;
@@ -843,7 +843,7 @@ export async function executeTeamOperations(
     return request(
       this,
       'DELETE',
-      `/devices/${deviceId}/team`,
+      `/devices/${device}/team`,
       body,
     );
   }

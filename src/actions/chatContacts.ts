@@ -69,7 +69,7 @@ export const chatContactProperties: INodeProperties[] = [
   },
   {
     displayName: 'WhatsApp Number',
-    name: 'deviceId',
+    name: 'device',
     type: 'string',
     required: true,
     default: '',
@@ -176,6 +176,8 @@ export const chatContactProperties: INodeProperties[] = [
         type: 'string',
         typeOptions: {
           multipleValues: true,
+          loadOptionsMethod: 'getLabels',
+          loadOptionsDependsOn: ['device'],
         },
         default: [],
         description: 'Filter contacts by chat labels. Use * to include any labeled chat.',
@@ -186,6 +188,8 @@ export const chatContactProperties: INodeProperties[] = [
         type: 'string',
         typeOptions: {
           multipleValues: true,
+          loadOptionsMethod: 'getLabels',
+          loadOptionsDependsOn: ['device'],
         },
         default: [],
         description: 'Exclude contacts with specific labels. Use * to exclude any labeled chat.',
@@ -820,7 +824,7 @@ export async function executeChatContactOperations(
   index: number,
 ) {
   const operation = this.getNodeParameter('operation', index) as string;
-  const deviceId = this.getNodeParameter('deviceId', index) as string;
+  const device = this.getNodeParameter('device', index) as string;
 
   // GET CONTACTS
   if (operation === 'getDeviceContacts') {
@@ -859,7 +863,7 @@ export async function executeChatContactOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/contacts`,
+      `/chat/${device}/contacts`,
       undefined,
       queryParameters as Record<string, string>,
     );
@@ -878,7 +882,7 @@ export async function executeChatContactOperations(
     return request(
       this,
       'GET',
-      `/chat/${deviceId}/contacts/${contactId}`,
+      `/chat/${device}/contacts/${contactId}`,
       undefined,
       queryParameters,
     );
@@ -905,7 +909,7 @@ export async function executeChatContactOperations(
     return request(
       this,
       'POST',
-      `/chat/${deviceId}/contacts`,
+      `/chat/${device}/contacts`,
       body,
     );
   }
@@ -936,7 +940,7 @@ export async function executeChatContactOperations(
     return request(
       this,
       'PATCH',
-      `/chat/${deviceId}/contacts/${contactId}`,
+      `/chat/${device}/contacts/${contactId}`,
       body,
     );
   }
@@ -955,7 +959,7 @@ export async function executeChatContactOperations(
     return request(
       this,
       'PUT',
-      `/chat/${deviceId}/contacts/${contactId}/metadata`,
+      `/chat/${device}/contacts/${contactId}/metadata`,
       metadata.metadataValues,
     );
   }
@@ -974,7 +978,7 @@ export async function executeChatContactOperations(
     return request(
       this,
       'PATCH',
-      `/chat/${deviceId}/contacts/${contactId}/metadata`,
+      `/chat/${device}/contacts/${contactId}/metadata`,
       metadata.metadataValues,
     );
   }
@@ -986,7 +990,7 @@ export async function executeChatContactOperations(
     return request(
       this,
       'DELETE',
-      `/chat/${deviceId}/contacts/${contactId}`,
+      `/chat/${device}/contacts/${contactId}`,
     );
   }
 
@@ -1015,7 +1019,7 @@ export async function executeChatContactOperations(
     return request(
       this,
       'PATCH',
-      `/chat/${deviceId}/contacts`,
+      `/chat/${device}/contacts`,
       contacts.contactValues,
       queryParameters,
     );
@@ -1036,7 +1040,7 @@ export async function executeChatContactOperations(
     return request(
       this,
       'POST',
-      `/devices/${deviceId}/block`,
+      `/devices/${device}/block`,
       { contacts },
     );
   }
@@ -1056,7 +1060,7 @@ export async function executeChatContactOperations(
     return request(
       this,
       'DELETE',
-      `/devices/${deviceId}/block`,
+      `/devices/${device}/block`,
       { contacts },
     );
   }

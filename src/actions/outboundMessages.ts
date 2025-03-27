@@ -466,6 +466,17 @@ export const outboundMessageProperties: INodeProperties[] = [
         default: [],
         description: 'Fields to remove from the message',
       },
+      {
+        displayName: 'Label',
+        name: 'label',
+        type: 'string',
+        typeOptions: {
+          loadOptionsMethod: 'getLabels',
+          loadOptionsDependsOn: ['device'],
+        },
+        default: '',
+        description: 'Custom label to categorize the message',
+      },
     ],
   },
 
