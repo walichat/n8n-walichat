@@ -1,4 +1,4 @@
-import { INodeType, INodeTypeDescription, IExecuteFunctions, NodeConnectionType } from 'n8n-workflow';
+import { INodeType, INodeTypeDescription, IExecuteFunctions } from 'n8n-workflow';
 import * as options from './methods';
 import { teamProperties, executeTeamOperations } from '../actions/team';
 import { messageProperties, executeMessageOperations } from '../actions/send-messages';
@@ -36,11 +36,11 @@ export class WaliChat implements INodeType {
     defaults: {
       name: 'WaliChat',
     },
-    inputs: [NodeConnectionType.Main],
-    outputs: [NodeConnectionType.Main],
+    inputs: ['main'],
+    outputs: ['main'],
     credentials: [
       {
-        name: 'apiKey',
+        name: 'walichatApiKey',
         required: true,
       },
     ],

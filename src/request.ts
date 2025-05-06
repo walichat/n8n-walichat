@@ -20,8 +20,8 @@ export async function request(
   query?: Record<string, string>,
   customHeaders?: Record<string, string>,
 ): Promise<any> {
-  const credentials = await executeFunctions.getCredentials('apiKey');
-  const apiKey = credentials.apiKey as string;
+  const credentials = await executeFunctions.getCredentials('walichatApiKey');
+  const apiKey = credentials.walichatApiKey as string;
 
   if (!apiKey) {
     throw new Error('API key is required');
@@ -33,6 +33,7 @@ export async function request(
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${apiKey}`,
+    'x-n8n-client': process.env.N8N_RUNTIME_ENV || 'n8n',
     ...(customHeaders || {}),
   };
 

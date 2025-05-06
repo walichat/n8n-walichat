@@ -4,7 +4,6 @@ import {
   INodeTypeDescription,
   IWebhookFunctions,
   IWebhookResponseData,
-  NodeConnectionType,
   ILoadOptionsFunctions,
 } from 'n8n-workflow';
 import { IDataObject } from 'n8n-workflow';
@@ -23,10 +22,10 @@ export class WaliChatTrigger implements INodeType {
       name: 'WaliChat Trigger',
     },
     inputs: [],
-    outputs: [NodeConnectionType.Main],
+    outputs: ['main'],
     credentials: [
       {
-        name: 'apiKey',
+        name: 'walichatApiKey',
         required: true,
       },
     ],
@@ -89,7 +88,7 @@ export class WaliChatTrigger implements INodeType {
   methods = {
     loadOptions: {
       async getDevices(this: ILoadOptionsFunctions) {
-        const credentials = await this.getCredentials('apiKey');
+        const credentials = await this.getCredentials('walichatApiKey');
         const apiKey = credentials.apiKey as string;
 
         try {
@@ -144,7 +143,7 @@ export class WaliChatTrigger implements INodeType {
     const webhookId = (nodeData?.webhookId as string) || '';
     if (webhookId) {
       try {
-        const credentials = await this.getCredentials('apiKey');
+        const credentials = await this.getCredentials('walichatApiKey');
         const apiKey = credentials.apiKey as string;
 
         await axios.delete(`https://api.wali.chat/v1/webhooks/${webhookId}`, {
@@ -165,7 +164,7 @@ export class WaliChatTrigger implements INodeType {
     }
 
     try {
-      const credentials = await this.getCredentials('apiKey');
+      const credentials = await this.getCredentials('walichatApiKey');
       const apiKey = credentials.apiKey as string;
 
       const requestBody: IDataObject = {
@@ -212,7 +211,7 @@ export class WaliChatTrigger implements INodeType {
     }
 
     try {
-      const credentials = await this.getCredentials('apiKey');
+      const credentials = await this.getCredentials('walichatApiKey');
       const apiKey = credentials.apiKey as string;
 
       await axios.delete(`https://api.wali.chat/v1/webhooks/${webhookId}`, {

@@ -3,7 +3,7 @@ import { ILoadOptionsFunctions, INodePropertyOptions } from 'n8n-workflow';
 
 export async function getDevices(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
   // Retrieve the credentials object declared on the node
-  const credentials = await this.getCredentials('apiKey');
+  const credentials = await this.getCredentials('walichatApiKey');
   if (!credentials || !credentials.apiKey) {
     throw new Error('No WaliChat API Key credentials found!');
   }
@@ -17,7 +17,7 @@ export async function getDevices(this: ILoadOptionsFunctions): Promise<INodeProp
 
 export async function getGroups(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
   // Retrieve the credentials object declared on the node
-  const credentials = await this.getCredentials('apiKey');
+  const credentials = await this.getCredentials('walichatApiKey');
   if (!credentials || !credentials.apiKey) {
     throw new Error('No WaliChat API Key credentials found!');
   }
@@ -38,7 +38,7 @@ export async function getGroups(this: ILoadOptionsFunctions): Promise<INodePrope
 
 export async function getFiles(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
   // Retrieve the credentials object declared on the node
-  const credentials = await this.getCredentials('apiKey');
+  const credentials = await this.getCredentials('walichatApiKey');
   if (!credentials || !credentials.apiKey) {
     throw new Error('No WaliChat API Key credentials found!');
   }
@@ -58,7 +58,7 @@ export async function getFiles(this: ILoadOptionsFunctions): Promise<INodeProper
 
 export async function getTeamAgents(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
   // Retrieve the credentials object declared on the node
-  const credentials = await this.getCredentials('apiKey');
+  const credentials = await this.getCredentials('walichatApiKey');
   if (!credentials || !credentials.apiKey) {
     throw new Error('No WaliChat API Key credentials found!');
   }
@@ -75,7 +75,7 @@ export async function getTeamAgents(this: ILoadOptionsFunctions): Promise<INodeP
 }
 
 export async function getDepartments(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
-  const credentials = await this.getCredentials('apiKey');
+  const credentials = await this.getCredentials('walichatApiKey');
   if (!credentials || !credentials.apiKey) {
     throw new Error('No WaliChat API Key credentials found!');
   }
@@ -94,7 +94,7 @@ export async function getDepartments(this: ILoadOptionsFunctions): Promise<INode
 export async function getLabels(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
   // Implement the call
   // Retrieve the credentials object declared on the node
-  const credentials = await this.getCredentials('apiKey');
+  const credentials = await this.getCredentials('walichatApiKey');
   if (!credentials || !credentials.apiKey) {
     throw new Error('No WaliChat API Key credentials found!');
   }
