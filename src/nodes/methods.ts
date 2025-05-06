@@ -4,10 +4,10 @@ import { ILoadOptionsFunctions, INodePropertyOptions } from 'n8n-workflow';
 export async function getDevices(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
   // Retrieve the credentials object declared on the node
   const credentials = await this.getCredentials('walichatApiKey');
-  if (!credentials || !credentials.apiKey) {
+  if (!credentials || !credentials.walichatApiKey) {
     throw new Error('No WaliChat API Key credentials found!');
   }
-  const apiKey = credentials.apiKey as string;
+  const apiKey = credentials.walichatApiKey as string;
   const response = await axios.get(`https://api.wali.chat/v1/devices?size=100&token=${apiKey}`);
   return response.data.map((device: { id: string, alias: string, phone: string }) => ({
     name: `${device.alias} (${device.phone})`,
@@ -18,7 +18,7 @@ export async function getDevices(this: ILoadOptionsFunctions): Promise<INodeProp
 export async function getGroups(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
   // Retrieve the credentials object declared on the node
   const credentials = await this.getCredentials('walichatApiKey');
-  if (!credentials || !credentials.apiKey) {
+  if (!credentials || !credentials.walichatApiKey) {
     throw new Error('No WaliChat API Key credentials found!');
   }
   const device = this.getNodeParameter('device', 0) as string;
@@ -26,7 +26,7 @@ export async function getGroups(this: ILoadOptionsFunctions): Promise<INodePrope
     throw new Error('Please select WhatsApp device selected');
   }
   const target = this.getNodeParameter('target') as string;
-  const apiKey = credentials.apiKey as string;
+  const apiKey = credentials.walichatApiKey as string;
   const response = await axios.get(`https://api.wali.chat/v1/devices/${device}/groups?size=500&kind=${target === 'channel' ? 'channel' : 'group'}&token=${apiKey}`);
   return response.data.filter((group: { isReadOnly: boolean }) => {
     return group.isReadOnly !== true;
@@ -39,11 +39,11 @@ export async function getGroups(this: ILoadOptionsFunctions): Promise<INodePrope
 export async function getFiles(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
   // Retrieve the credentials object declared on the node
   const credentials = await this.getCredentials('walichatApiKey');
-  if (!credentials || !credentials.apiKey) {
+  if (!credentials || !credentials.walichatApiKey) {
     throw new Error('No WaliChat API Key credentials found!');
   }
 
-  const apiKey = credentials.apiKey as string;
+  const apiKey = credentials.walichatApiKey as string;
   const search = this.getNodeParameter('file', 0) as string;
   let url = `https://api.wali.chat/v1/files?size=100&token=${apiKey}`;
   if (search) {
@@ -59,14 +59,14 @@ export async function getFiles(this: ILoadOptionsFunctions): Promise<INodeProper
 export async function getTeamAgents(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
   // Retrieve the credentials object declared on the node
   const credentials = await this.getCredentials('walichatApiKey');
-  if (!credentials || !credentials.apiKey) {
+  if (!credentials || !credentials.walichatApiKey) {
     throw new Error('No WaliChat API Key credentials found!');
   }
   const device = this.getNodeParameter('device', 0) as string;
   if (!device) {
     throw new Error('Please select WhatsApp device selected');
   }
-  const apiKey = credentials.apiKey as string;
+  const apiKey = credentials.walichatApiKey as string;
   const response = await axios.get(`https://api.wali.chat/v1/devices/${device}/team?size=100&token=${apiKey}`);
   return response.data.map((agent: { id: string, displayName: string, email: string }) => ({
     name: agent.displayName + ' - ' + agent.email,
@@ -76,14 +76,14 @@ export async function getTeamAgents(this: ILoadOptionsFunctions): Promise<INodeP
 
 export async function getDepartments(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
   const credentials = await this.getCredentials('walichatApiKey');
-  if (!credentials || !credentials.apiKey) {
+  if (!credentials || !credentials.walichatApiKey) {
     throw new Error('No WaliChat API Key credentials found!');
   }
   const device = this.getNodeParameter('device', 0) as string;
   if (!device) {
     throw new Error('Please select WhatsApp device selected');
   }
-  const apiKey = credentials.apiKey as string;
+  const apiKey = credentials.walichatApiKey as string;
   const response = await axios.get(`https://api.wali.chat/v1/devices/${device}/departments?token=${apiKey}`);
   return response.data.map((department: { id: string, name: string }) => ({
     name: department.name,
@@ -95,14 +95,14 @@ export async function getLabels(this: ILoadOptionsFunctions): Promise<INodePrope
   // Implement the call
   // Retrieve the credentials object declared on the node
   const credentials = await this.getCredentials('walichatApiKey');
-  if (!credentials || !credentials.apiKey) {
+  if (!credentials || !credentials.walichatApiKey) {
     throw new Error('No WaliChat API Key credentials found!');
   }
   const device = this.getNodeParameter('device', 0) as string;
   if (!device) {
     throw new Error('Please select WhatsApp device selected');
   }
-  const apiKey = credentials.apiKey as string;
+  const apiKey = credentials.walichatApiKey as string;
   const response = await axios.get(`https://api.wali.chat/v1/devices/${device}/labels?size=100&token=${apiKey}`);
   return response.data.filter((label: { scope: string }) => label.scope === 'chat').map((label: { id: string, name: string, scope: string }) => ({
     name: label.name,
