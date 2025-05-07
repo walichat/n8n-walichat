@@ -1,6 +1,21 @@
 import { IExecuteFunctions } from 'n8n-workflow';
 import axios, { AxiosRequestConfig, Method } from 'axios';
 
+const clientRuntime = process.env.N8N_RUNTIME_CLIENT
+
+export async function rawRequest (opts: AxiosRequestConfig, apiKey: string): Promise<any> {
+  if (!apiKey) {
+    throw new Error('API key is required');
+  }
+  opts.headers = opts.headers || {};
+  Object.assign(opts.headers, {
+    'Authorization': `Bearer ${clientRuntime ? clientRuntime + '_' : ''}${apiKey}`,
+    'x-n8n-client': 'n8n',
+  })
+
+  return await axios(opts);
+}
+
 /**
  * Makes an authenticated request to the WaliChat API
  *
@@ -22,7 +37,6 @@ export async function request(
 ): Promise<any> {
   const credentials = await executeFunctions.getCredentials('walichatApiKey');
   const apiKey = credentials.walichatApiKey as string;
-
   if (!apiKey) {
     throw new Error('API key is required');
   }
@@ -32,8 +46,8 @@ export async function request(
 
   const headers = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${apiKey}`,
-    'x-n8n-client': process.env.N8N_RUNTIME_ENV || 'n8n',
+    'Authorization': `Bearer ${clientRuntime ? clientRuntime + '_' : ''}${apiKey}`,
+    'x-n8n-client': 'n8n',
     ...(customHeaders || {}),
   };
 

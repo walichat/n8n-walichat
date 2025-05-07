@@ -8,6 +8,7 @@ import {
 } from 'n8n-workflow';
 import { IDataObject } from 'n8n-workflow';
 import axios from 'axios';
+import { rawRequest } from '../request';
 
 export class WaliChatTrigger implements INodeType {
   description: INodeTypeDescription = {
@@ -92,13 +93,9 @@ export class WaliChatTrigger implements INodeType {
         const apiKey = credentials.walichatApiKey as string;
 
         try {
-          const response = await axios.get('https://api.wali.chat/v1/devices?size=100', {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`,
-              'x-n8n-client': process.env.N8N_RUNTIME_ENV || 'n8n',
-            },
-          });
+          const response = await rawRequest({
+            url: 'https://api.wali.chat/v1/devices?size=100'
+          }, apiKey);
 
           if (Array.isArray(response.data)) {
             const devices = response.data.map((device: any) => ({
@@ -130,7 +127,6 @@ export class WaliChatTrigger implements INodeType {
         const webhookUrl = this.getNodeWebhookUrl('default');
         const nodeData = this.getWorkflowStaticData('node');
         const webhookId = nodeData.webhookId as string;
-
         if (!webhookId) {
           return false;
         }
@@ -139,13 +135,9 @@ export class WaliChatTrigger implements INodeType {
           const credentials = await this.getCredentials('walichatApiKey');
           const apiKey = credentials.walichatApiKey as string;
 
-          const response = await axios.get(`https://api.wali.chat/v1/webhooks/${webhookId}?size=100`, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`,
-              'x-n8n-client': process.env.N8N_RUNTIME_ENV || 'n8n',
-            },
-          });
+          const response = await rawRequest({
+            url: `https://api.wali.chat/v1/webhooks/${webhookId}?size=100`
+          }, apiKey);
 
           return response.data.url === webhookUrl;
         } catch (error) {
@@ -174,7 +166,8 @@ export class WaliChatTrigger implements INodeType {
           const credentials = await this.getCredentials('walichatApiKey');
           const apiKey = credentials.walichatApiKey as string;
 
-          const prefix = process.env.N8N_RUNTIME_ENV === 'waplatform' ? 'Flows' : 'n8n';
+          const clientRuntime = process.env.N8N_RUNTIME_CLIENT || 'n8n';
+          const prefix = clientRuntime.replace('_', '')
           const requestBody: IDataObject = {
             name: `${prefix}: ${webhookName}`,
             url: webhookUrl,
@@ -185,12 +178,14 @@ export class WaliChatTrigger implements INodeType {
             requestBody.device = device;
           }
 
-          const response = await axios.post('https://api.wali.chat/v1/webhooks', requestBody, {
+          const response = await rawRequest({
+            url: 'https://api.wali.chat/v1/webhooks',
+            method: 'POST',
+            data: requestBody,
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`,
             },
-          });
+          }, apiKey);
 
           if (response.data && response.data.id) {
             const nodeData = this.getWorkflowStaticData('node');
@@ -219,12 +214,13 @@ export class WaliChatTrigger implements INodeType {
           const credentials = await this.getCredentials('walichatApiKey');
           const apiKey = credentials.walichatApiKey as string;
 
-          await axios.delete(`https://api.wali.chat/v1/webhooks/${webhookId}`, {
+          await rawRequest({
+            url: `https://api.wali.chat/v1/webhooks/${webhookId}`,
+            method: 'DELETE',
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
             },
-          });
+          }, apiKey);
 
           return true;
         } catch (error) {
