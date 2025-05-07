@@ -42,7 +42,7 @@ export class WaliChatTrigger implements INodeType {
         displayName: 'Webhook name',
         name: 'webhookName',
         type: 'string',
-        default: 'n8n events',
+        default: 'Automations',
         required: true,
         description: 'Webhook internal name for your reference (max 30 characters)',
         typeOptions: {
@@ -96,6 +96,7 @@ export class WaliChatTrigger implements INodeType {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${apiKey}`,
+              'x-n8n-client': process.env.N8N_RUNTIME_ENV || 'n8n',
             },
           });
 
@@ -123,121 +124,125 @@ export class WaliChatTrigger implements INodeType {
     },
   };
 
-  // This method is called when the webhook is created
-  async webhookCreate(this: IHookFunctions): Promise<boolean> {
-    const webhookUrl = this.getNodeWebhookUrl('default');
-    const webhookName = this.getNodeParameter('webhookName') as string;
-    const device = this.getNodeParameter('device', '') as string;
-    const events = this.getNodeParameter('events', []) as string[];
-
-    if (!webhookUrl) {
-      throw new Error('No webhook URL available for registration');
-    }
-
-    if (events.length === 0) {
-      throw new Error('At least one event must be selected');
-    }
-
-    // Before registering a new webhook, delete any existing one
-    const nodeData = this.getWorkflowStaticData('node');
-    const webhookId = (nodeData?.webhookId as string) || '';
-    if (webhookId) {
-      try {
-        const credentials = await this.getCredentials('walichatApiKey');
-        const apiKey = credentials.walichatApiKey as string;
-
-        await axios.delete(`https://api.wali.chat/v1/webhooks/${webhookId}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`,
-          },
-        });
-      } catch (error) {
-        // If the webhook doesn't exist anymore, consider the deletion successful
-        if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
-          // Webhook doesn't exist, which is fine
-        } else {
-          console.error('Error deleting existing WaliChat webhook:', error);
-          // Continue anyway to create the new webhook
-        }
-      }
-    }
-
-    try {
-      const credentials = await this.getCredentials('walichatApiKey');
-      const apiKey = credentials.walichatApiKey as string;
-
-      const requestBody: IDataObject = {
-        name: `n8n: ${webhookName}`,
-        url: webhookUrl,
-        events,
-      };
-
-      if (device) {
-        requestBody.device = device;
-      }
-
-      const response = await axios.post('https://api.wali.chat/v1/webhooks', requestBody, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-        },
-      });
-
-      if (response.data && response.data.id) {
-        // Store webhook ID for later use in deregistration
+  webhookMethods = {
+    default: {
+      async checkExists(this: IHookFunctions): Promise<boolean> {
+        const webhookUrl = this.getNodeWebhookUrl('default');
         const nodeData = this.getWorkflowStaticData('node');
-        nodeData.webhookId = response.data.id;
-        return true;
-      }
+        const webhookId = nodeData.webhookId as string;
 
-      return false;
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        throw new Error(`WaliChat webhook registration failed: ${error.response.data?.message || error.message}`);
-      }
-      throw error;
-    }
-  }
-  // This method is called when the webhook is deleted
-  async webhookDelete(this: IHookFunctions): Promise<boolean> {
-    const nodeData = this.getWorkflowStaticData('node');
-    const webhookId = (nodeData.webhookId as string) || '';
-    // const webhookId = await this.getNodeParameter('webhookId', '') as string;
+        if (!webhookId) {
+          return false;
+        }
 
-    if (!webhookId) {
-      // No webhook was registered
-      return true;
-    }
+        try {
+          const credentials = await this.getCredentials('walichatApiKey');
+          const apiKey = credentials.walichatApiKey as string;
 
-    try {
-      const credentials = await this.getCredentials('walichatApiKey');
-      const apiKey = credentials.walichatApiKey as string;
+          const response = await axios.get(`https://api.wali.chat/v1/webhooks/${webhookId}?size=100`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`,
+              'x-n8n-client': process.env.N8N_RUNTIME_ENV || 'n8n',
+            },
+          });
 
-      await axios.delete(`https://api.wali.chat/v1/webhooks/${webhookId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-        },
-      });
+          return response.data.url === webhookUrl;
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
+            return false;
+          }
+          throw error;
+        }
+      },
 
-      return true;
-    } catch (error) {
-      // If the webhook doesn't exist anymore, consider the deletion successful
-      if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
-        return true;
-      }
+      async create(this: IHookFunctions): Promise<boolean> {
+        const webhookUrl = this.getNodeWebhookUrl('default');
+        const webhookName = this.getNodeParameter('webhookName') as string;
+        const device = this.getNodeParameter('device', '') as string;
+        const events = this.getNodeParameter('events', []) as string[];
 
-      if (axios.isAxiosError(error) && error.response) {
-        console.error(`WaliChat webhook deletion failed: ${error.response.data?.message || error.message}`);
-      } else {
-        console.error('Error deleting WaliChat webhook:', error);
-      }
+        if (!webhookUrl) {
+          throw new Error('No webhook URL available for registration');
+        }
 
-      // Return true anyway to allow the node to be deleted
-      return true;
-    }
-  }
+        if (events.length === 0) {
+          throw new Error('At least one event must be selected');
+        }
+
+        try {
+          const credentials = await this.getCredentials('walichatApiKey');
+          const apiKey = credentials.walichatApiKey as string;
+
+          const prefix = process.env.N8N_RUNTIME_ENV === 'waplatform' ? 'Flows' : 'n8n';
+          const requestBody: IDataObject = {
+            name: `${prefix}: ${webhookName}`,
+            url: webhookUrl,
+            events,
+          };
+
+          if (device) {
+            requestBody.device = device;
+          }
+
+          const response = await axios.post('https://api.wali.chat/v1/webhooks', requestBody, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`,
+            },
+          });
+
+          if (response.data && response.data.id) {
+            const nodeData = this.getWorkflowStaticData('node');
+            nodeData.webhookId = response.data.id;
+            return true;
+          }
+
+          return false;
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response) {
+            throw new Error(`WaliChat webhook registration failed: ${error.response.data?.message || error.message}`);
+          }
+          throw error;
+        }
+      },
+
+      async delete(this: IHookFunctions): Promise<boolean> {
+        const nodeData = this.getWorkflowStaticData('node');
+        const webhookId = nodeData.webhookId as string;
+
+        if (!webhookId) {
+          return true;
+        }
+
+        try {
+          const credentials = await this.getCredentials('walichatApiKey');
+          const apiKey = credentials.walichatApiKey as string;
+
+          await axios.delete(`https://api.wali.chat/v1/webhooks/${webhookId}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`,
+            },
+          });
+
+          return true;
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
+            return true;
+          }
+
+          if (axios.isAxiosError(error) && error.response) {
+            console.error(`WaliChat webhook deletion failed: ${error.response.data?.message || error.message}`);
+          } else {
+            console.error('Error deleting WaliChat webhook:', error);
+          }
+
+          return true;
+        }
+      },
+    },
+  };
 
   // This method is called when a webhook request is received
   async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
