@@ -196,6 +196,9 @@ export class WaliChatTrigger implements INodeType {
           return false;
         } catch (error) {
           if (axios.isAxiosError(error) && error.response) {
+            if (error.response.status === 409) {
+              return true;
+            }
             throw new Error(`WaliChat webhook registration failed: ${error.response.data?.message || error.message}`);
           }
           throw error;

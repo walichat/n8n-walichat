@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-walichat",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "n8n plugin for WaliChat",
   "main": "index.js",
   "license": "MIT",
