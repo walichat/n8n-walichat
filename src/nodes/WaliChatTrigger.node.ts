@@ -10,6 +10,8 @@ import { IDataObject } from 'n8n-workflow';
 import axios from 'axios';
 import { rawRequest } from '../request';
 
+const clientRuntime = process.env.N8N_RUNTIME_CLIENT
+
 export class WaliChatTrigger implements INodeType {
   description: INodeTypeDescription = {
     displayName: 'WaliChat Trigger',
@@ -97,11 +99,15 @@ export class WaliChatTrigger implements INodeType {
             url: 'https://api.wali.chat/v1/devices?size=100'
           }, apiKey);
 
-          if (Array.isArray(response.data)) {
+          if (Array.isArray(response.data) && response.data.length > 0) {
             const devices = response.data.map((device: any) => ({
               name: `${device.alias || 'Unnamed'} (${device.phone || 'No phone yet'})`,
               value: device.id,
             }));
+
+            if (clientRuntime) {
+              return devices
+            }
 
             return [
               {
@@ -112,6 +118,14 @@ export class WaliChatTrigger implements INodeType {
             ];
           }
 
+          if (clientRuntime) {
+            return [
+              {
+                name: 'No WhatsApp numbers available: connect one or upgrade plan ',
+                value: 'invalid',
+              }
+            ];
+          }
           return [{ name: 'All WhatsApp numbers in your account', value: '' }];
         } catch (error: any) {
           console.error('Error loading devices:', error.message);
