@@ -95,9 +95,7 @@ export class WaliChatTrigger implements INodeType {
         const apiKey = credentials.walichatApiKey as string;
 
         try {
-          const response = await rawRequest({
-            url: 'https://api.wali.chat/v1/devices?size=100'
-          }, apiKey);
+          const response = await rawRequest({ url: '/devices?size=100' }, apiKey);
 
           if (Array.isArray(response.data) && response.data.length > 0) {
             const devices = response.data.map((device: any) => ({
@@ -128,7 +126,6 @@ export class WaliChatTrigger implements INodeType {
           }
           return [{ name: 'All WhatsApp numbers in your account', value: '' }];
         } catch (error: any) {
-          console.error('Error loading devices:', error.message);
           return [{ name: 'All WhatsApp numbers in your account', value: '' }];
         }
       },
@@ -149,9 +146,7 @@ export class WaliChatTrigger implements INodeType {
           const credentials = await this.getCredentials('walichatApiKey');
           const apiKey = credentials.walichatApiKey as string;
 
-          const response = await rawRequest({
-            url: `https://api.wali.chat/v1/webhooks/${webhookId}?size=100`
-          }, apiKey);
+          const response = await rawRequest({ url: `/webhooks/${webhookId}?size=100` }, apiKey);
 
           return response.data.url === webhookUrl;
         } catch (error) {
@@ -193,7 +188,7 @@ export class WaliChatTrigger implements INodeType {
           }
 
           const response = await rawRequest({
-            url: 'https://api.wali.chat/v1/webhooks',
+            url: '/webhooks',
             method: 'POST',
             data: requestBody,
             headers: {
@@ -232,7 +227,7 @@ export class WaliChatTrigger implements INodeType {
           const apiKey = credentials.walichatApiKey as string;
 
           await rawRequest({
-            url: `https://api.wali.chat/v1/webhooks/${webhookId}`,
+            url: `/webhooks/${webhookId}`,
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json'

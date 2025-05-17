@@ -1,16 +1,21 @@
 import { IExecuteFunctions } from 'n8n-workflow';
 import axios, { AxiosRequestConfig, Method } from 'axios';
 
+const baseUrl = 'https://api.wali.chat/v1';
 const clientRuntime = process.env.N8N_RUNTIME_CLIENT
 
 export async function rawRequest (opts: AxiosRequestConfig, apiKey: string): Promise<any> {
   if (!apiKey) {
     throw new Error('API key is required');
   }
+  if (!opts.url) {
+    throw new Error('URL path is required');
+  }
+  opts.baseURL = baseUrl;
   opts.headers = opts.headers || {};
   Object.assign(opts.headers, {
-    'Authorization': `Bearer ${clientRuntime ? clientRuntime + '_' : ''}${apiKey}`,
     'x-n8n-client': 'n8n',
+    'Authorization': `Bearer ${clientRuntime ? clientRuntime + '_' : ''}${apiKey}`,
   })
 
   return await axios(opts);
@@ -41,7 +46,6 @@ export async function request(
     throw new Error('API key is required');
   }
 
-  const baseUrl = 'https://api.wali.chat/v1';
   const url = `${baseUrl}${endpoint}`;
 
   const headers = {
@@ -52,8 +56,8 @@ export async function request(
   };
 
   const config: AxiosRequestConfig = {
-    method,
     url,
+    method,
     headers,
     params: query,
   };

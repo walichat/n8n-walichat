@@ -904,7 +904,21 @@ export const messageProperties: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['send-messages'],
-        operation: ['sendText', 'sendMedia', 'sendScheduled', 'sendPoll', 'sendPollVote', 'deletePollVote', 'sendEvent', 'confirmEvent', 'sendLocation', 'sendContacts', 'sendReaction', 'sendProduct', 'forwardMessage'],
+        operation: [
+          'sendText',
+          'sendMedia',
+          'sendScheduled',
+          'sendPoll',
+          'sendPollVote',
+          'deletePollVote',
+          'sendEvent',
+          'confirmEvent',
+          'sendLocation',
+          'sendContacts',
+          'sendReaction',
+          'sendProduct',
+          'forwardMessage'
+        ],
       },
     },
     options: [
@@ -946,7 +960,7 @@ export const messageProperties: INodeProperties[] = [
         default: '',
         typeOptions: {
           validationRule: 'regex',
-          regex: /^\+[1-9]\d{1,14}$/,
+          regex: /^[a-f0-9]{24}$/,
           errorMessage: 'Please enter a valid team agent ID (24 characters hexadecimal)',
           maxLength: 24,
           minLength: 24,
@@ -956,11 +970,11 @@ export const messageProperties: INodeProperties[] = [
       },
       // Advanced delivery options
       {
-        displayName: 'Send in live mode',
+        displayName: 'Send in real-time (riskier, no queue)',
         name: 'live',
         type: 'boolean',
         default: false,
-        description: 'Send message in live mode without enqueuing it (real-time delivery). Imporaant: do not use this option if you plan to send dozens of messages per minute at a constant rate since this can increase risk of ban by WhatsApp.',
+        description: 'Send message in real-time mode without enqueuing it (live mode). Important: do not use this option if you plan to send dozens of messages per minute at a constant rate since this can increase risk of ban by WhatsApp.',
       },
       {
         displayName: 'Delivery Queue Mode',
@@ -985,6 +999,179 @@ export const messageProperties: INodeProperties[] = [
           maxValue: 100,
         },
         description: 'Maximum message delivery retries',
+      },
+      {
+        displayName: 'Chat Actions (Assign, Resolve, Metadata...)',
+        name: 'actions',
+        type: 'fixedCollection',
+        typeOptions: {
+          multipleValues: true,
+        },
+        default: {},
+        description: 'Optional actions to perform after the message is delivered',
+        options: [
+          {
+            name: 'actions',
+            displayName: 'Actions',
+            values: [
+              {
+                displayName: 'Action Type',
+                name: 'action',
+                type: 'options',
+                options: [
+                  { name: 'Assign Chat to an Agent', value: 'chat:assign' },
+                  { name: 'Assign Chat to a Department', value: 'chat:assign:department' },
+                  { name: 'Unassign Chat', value: 'chat:unassign' },
+                  { name: 'Resolve Chat', value: 'chat:resolve' },
+                  { name: 'Unresolve Chat', value: 'chat:unresolve' },
+                  { name: 'Mark Chat as Read', value: 'chat:read' },
+                  { name: 'Mark Chat as Unread', value: 'chat:unread' },
+                  { name: 'Add Labels', value: 'labels:add' },
+                  { name: 'Remove Labels', value: 'labels:remove' },
+                  { name: 'Set Labels', value: 'labels:set' },
+                  { name: 'Set Metadata', value: 'metadata:set' },
+                  { name: 'Add Metadata', value: 'metadata:add' },
+                  { name: 'Remove Metadata', value: 'metadata:remove' },
+                ],
+                default: 'chat:assign',
+                description: 'The type of action to perform after message delivery',
+              },
+              // Fields for chat:assign
+              {
+                displayName: 'Agent ID',
+                name: 'agent',
+                description: 'User agent ID to assign the chat to after message delivery. Required if Department ID is not provided.',
+                type: 'options',
+                default: '',
+                typeOptions: {
+                  validationRule: 'regex',
+                  regex: /^[a-f0-9]{24}$/,
+                  errorMessage: 'Please enter a valid team agent ID (24 characters hexadecimal)',
+                  maxLength: 24,
+                  minLength: 24,
+                  loadOptionsMethod: 'getTeamAgents',
+                  loadOptionsDependsOn: ['device'],
+                },
+                displayOptions: {
+                  show: {
+                    action: ['chat:assign'],
+                  },
+                },
+              },
+              {
+                displayName: 'Department ID',
+                name: 'department',
+                type: 'options',
+                default: '',
+                description: 'Department ID to assign the chat to. Required if Agent ID is not provided.',
+                typeOptions: {
+                  validationRule: 'regex',
+                  regex: /^[a-f0-9]{24}$/,
+                  errorMessage: 'Please enter a valid Department ID (24 characters hexadecimal)',
+                  maxLength: 24,
+                  minLength: 24,
+                  loadOptionsMethod: 'getDepartments',
+                  loadOptionsDependsOn: ['device'],
+                },
+                displayOptions: {
+                  show: {
+                    action: ['chat:assign:department'],
+                  },
+                },
+              },
+              // Fields for labels actions
+              {
+                displayName: 'Labels',
+                name: 'labels',
+                type: 'options',
+                typeOptions: {
+                  multipleValues: true,
+                  minValue: 1,
+                  maxValue: 50,
+                  loadOptionsMethod: 'getLabels',
+                  loadOptionsDependsOn: ['device'],
+                },
+                default: '',
+                placeholder: 'Select labels',
+                description: 'Label tags to add, remove or set in the chat.',
+                displayOptions: {
+                  show: {
+                    action: ['labels:add', 'labels:remove', 'labels:set'],
+                  },
+                },
+              },
+              // Fields for metadata actions
+              {
+                displayName: 'Metadata Entries',
+                name: 'metadata',
+                type: 'fixedCollection',
+                typeOptions: {
+                  multipleValues: true,
+                  minValue: 1,
+                  maxValue: 10,
+                },
+                default: { metadataValues: [{ key: '', value: '' }] },
+                description: 'Metadata key-value pairs to set or add.',
+                displayOptions: {
+                  show: {
+                    action: ['metadata:set', 'metadata:add'],
+                  },
+                },
+                options: [
+                  {
+                    name: 'metadataValues',
+                    displayName: 'Metadata',
+                    values: [
+                      {
+                        displayName: 'Key',
+                        name: 'key',
+                        type: 'string',
+                        default: '',
+                        description: 'Metadata entry key that can only contain alphanumeric (a-z, A-Z, 0-9), or underscore (_) characters.',
+                        typeOptions: {
+                          minLength: 1,
+                          maxLength: 30,
+                        },
+                        required: true,
+                      },
+                      {
+                        displayName: 'Value',
+                        name: 'value',
+                        type: 'string',
+                        default: '',
+                        description: 'Metadata entry value can contain any text up to 300 characters.',
+                        typeOptions: {
+                          maxLength: 300,
+                        },
+                        required: true,
+                      },
+                    ],
+                  },
+                ],
+              },
+              // Fields for metadata:remove
+              {
+                displayName: 'Delete metadata',
+                name: 'keys',
+                type: 'string',
+                typeOptions: {
+                  multipleValues: true,
+                  multipleValueButtonText: 'Add Key',
+                  minValue: 1,
+                  maxValue: 30,
+                },
+                default: '',
+                placeholder: 'e.g., customer_id, status',
+                description: 'Metadata entries to remove by keys.',
+                displayOptions: {
+                  show: {
+                    action: ['metadata:remove'],
+                  },
+                },
+              },
+            ],
+          },
+        ],
       },
       {
         displayName: 'Message Expiration',
@@ -1058,11 +1245,11 @@ export const messageProperties: INodeProperties[] = [
         ],
       },
       {
-        displayName: 'Mark as Read',
+        displayName: 'Mark Chat as Read',
         name: 'sendReadAck',
         type: 'boolean',
         default: false,
-        description: 'Report unread chat messages after delivery (blue double-check). Will not work if read confirmation is disabled in WhatsApp Privacy settings.',
+        description: 'Notifies WhatsAPp that the previous unread chat messages will be read after message delivery (blue double-check). Will not work if read confirmation is disabled in WhatsApp Privacy settings.',
       },
       {
         displayName: 'Typing simulation',
@@ -1142,6 +1329,121 @@ export async function executeMessageOperations(this: IExecuteFunctions, itemInde
 
     // Process options
     if (options) {
+      // Process chat actions if present
+      if ((options as any).actions && typeof (options as any).actions === 'object' && (options as any).actions.actions as IDataObject[]) {
+        const actionsCollection = (options as any).actions.actions as IDataObject[];
+        if (actionsCollection && actionsCollection.length > 0) {
+          const actions: IDataObject[] = [];
+
+          for (const actionItem of actionsCollection) {
+            const action = actionItem.action as string;
+            if (!action) continue;
+
+            const actionObject: IDataObject = { action };
+
+            // Handle different action types and their parameters
+            switch (action) {
+              case 'chat:assign':
+              case 'chat:assign:department':
+                actionObject.action = 'chat:assign';
+                // Add agent and/or department parameters
+                if (actionItem.agent || actionItem.department) {
+                  const params: IDataObject = {};
+                  if (actionItem.agent) {
+                    params.agent = actionItem.agent;
+                  } else if (actionItem.department) {
+                    params.department = actionItem.department;
+                  }
+                  actionObject.params = params;
+                } else {
+                  actionObject.action = null; // Skip entry if no agent or department
+                }
+                break;
+
+              case 'chat:unassign':
+                break;
+
+              case 'labels:add':
+              case 'labels:remove':
+              case 'labels:set':
+                // Process labels
+                if (actionItem.labels) {
+                  let labels: string[] = [];
+                  if (typeof actionItem.labels === 'string') {
+                    labels = [actionItem.labels as string];
+                  } else if (Array.isArray(actionItem.labels)) {
+                    labels = actionItem.labels as string[];
+                  }
+
+                  if (labels.length > 0) {
+                    actionObject.params = { labels };
+                  }
+                }
+                break;
+
+              case 'metadata:set':
+              case 'metadata:add':
+                // Process metadata key-value pairs
+                if (actionItem.metadata && typeof actionItem.metadata === 'object' && (actionItem.metadata as IDataObject).metadataValues) {
+                  const metadataEntries = ((actionItem.metadata as IDataObject).metadataValues as IDataObject[]);
+                  if (metadataEntries && metadataEntries.length > 0) {
+                    const metadata = metadataEntries.map(entry => ({
+                      key: entry.key as string,
+                      value: entry.value as string
+                    })).filter(entry => entry.key && entry.value);
+
+                    if (metadata.length > 0) {
+                      actionObject.params = { metadata };
+                    } else {
+                      actionObject.action = null; // Skip entry
+                    }
+                  }
+                }
+                break;
+
+              case 'metadata:remove':
+                // Process metadata keys to remove
+                if (actionItem.keys) {
+                  let keys: string[] = [];
+                  if (typeof actionItem.keys === 'string') {
+                    keys = [actionItem.keys as string];
+                  } else if (Array.isArray(actionItem.keys)) {
+                    keys = actionItem.keys as string[];
+                  }
+                  if (keys.length > 0) {
+                    actionObject.params = { keys };
+                  } else {
+                    actionObject.action = null; // Skip entry
+                  }
+                }
+                break;
+
+              case 'chat:resolve':
+              case 'chat:unresolve':
+              case 'chat:read':
+              case 'chat:unread':
+                // These actions don't need params
+                break;
+
+              default:
+                // Unknown action type
+                continue;
+            }
+
+            if (actionObject.action) {
+              actions.push(actionObject);
+            }
+          }
+
+          if (actions.length > 0) {
+            requestBody.actions = actions;
+          }
+        }
+
+        // Remove the actions from options to avoid duplication
+        delete options.actions;
+      }
+
       // Process expiration object if present
       if (options.expiration && typeof options.expiration === 'object') {
         const expiration = options.expiration as { values?: { type: string, seconds?: number, duration?: string, date?: string } };
