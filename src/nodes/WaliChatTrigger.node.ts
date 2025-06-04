@@ -144,12 +144,13 @@ export class WaliChatTrigger implements INodeType {
 
         const credentials = await this.getCredentials('walichatApiKey');
         const apiKey = credentials.walichatApiKey as string;
+        const workflowId = this.getWorkflow().id;
+
         try {
-          const response = await rawRequest({ url: `/webhooks/${webhookId}` }, apiKey);
+          const response = await rawRequest({ url: `/webhooks/${webhookId}?workflow=${workflowId}` }, apiKey);
           return response.data.url === webhookUrl;
         } catch (error) {
           // Delete all workflow specific webhooks
-          const workflowId = this.getWorkflow().id;
           try {
             await rawRequest({
               url: `/webhooks/600f1c2a9b3d4e5f6a7b8c00?workflow=${workflowId}`,
