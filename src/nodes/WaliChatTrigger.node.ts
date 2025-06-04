@@ -10,7 +10,7 @@ import { IDataObject } from 'n8n-workflow';
 import axios from 'axios';
 import { rawRequest } from '../request';
 
-const clientRuntime = process.env.N8N_RUNTIME_CLIENT
+const clientRuntime = process.env.N8N_RUNTIME_CLIENT || 'n8n';
 
 export class WaliChatTrigger implements INodeType {
   description: INodeTypeDescription = {
@@ -142,14 +142,22 @@ export class WaliChatTrigger implements INodeType {
           return false;
         }
 
+        const credentials = await this.getCredentials('walichatApiKey');
+        const apiKey = credentials.walichatApiKey as string;
         try {
-          const credentials = await this.getCredentials('walichatApiKey');
-          const apiKey = credentials.walichatApiKey as string;
-
-          const response = await rawRequest({ url: `/webhooks/${webhookId}?size=100` }, apiKey);
-
+          const response = await rawRequest({ url: `/webhooks/${webhookId}` }, apiKey);
           return response.data.url === webhookUrl;
         } catch (error) {
+          // Delete all workflow specific webhooks
+          const workflowId = this.getWorkflow().id;
+          try {
+            await rawRequest({
+              url: `/webhooks/600f1c2a9b3d4e5f6a7b8c00?workflow=${workflowId}`,
+              method: 'DELETE'
+            }, apiKey);
+          } catch (error: any) {
+            console.error(`Error checking WaliChat webhook existence:`, error.message);
+          }
           if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
             return false;
           }
@@ -162,11 +170,12 @@ export class WaliChatTrigger implements INodeType {
         const webhookName = this.getNodeParameter('webhookName') as string;
         const device = this.getNodeParameter('device', '') as string;
         const events = this.getNodeParameter('events', []) as string[];
+        // Get the n8n workflow ID
+        const workflowId = this.getWorkflow().id;
 
         if (!webhookUrl) {
           throw new Error('No webhook URL available for registration');
         }
-
         if (events.length === 0) {
           throw new Error('At least one event must be selected');
         }
@@ -174,12 +183,12 @@ export class WaliChatTrigger implements INodeType {
         try {
           const credentials = await this.getCredentials('walichatApiKey');
           const apiKey = credentials.walichatApiKey as string;
+          const url = `${webhookUrl}?workflow=${workflowId}`;
 
-          const clientRuntime = process.env.N8N_RUNTIME_CLIENT || 'n8n';
           const prefix = clientRuntime.replace('_', '')
           const requestBody: IDataObject = {
             name: `${prefix}: ${webhookName}`,
-            url: webhookUrl,
+            url,
             events,
           };
 
@@ -225,9 +234,10 @@ export class WaliChatTrigger implements INodeType {
         try {
           const credentials = await this.getCredentials('walichatApiKey');
           const apiKey = credentials.walichatApiKey as string;
+          const workflowId = this.getWorkflow().id;
 
           await rawRequest({
-            url: `/webhooks/${webhookId}`,
+            url: `/webhooks/${webhookId}?workflow=${workflowId}`,
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json'
@@ -239,13 +249,11 @@ export class WaliChatTrigger implements INodeType {
           if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
             return true;
           }
-
           if (axios.isAxiosError(error) && error.response) {
             console.error(`WaliChat webhook deletion failed: ${error.response.data?.message || error.message}`);
           } else {
             console.error('Error deleting WaliChat webhook:', error);
           }
-
           return true;
         }
       },
