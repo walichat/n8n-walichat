@@ -13,6 +13,24 @@ Send WhatsApp messages, upload media files, validate phone numbers, manage chats
 
 [Check out the API documentation and examples here](https://app.wali.chat/docs)
 
+> **Product update**: 🚀 no more need to host n8n on your own, try [WaliChat Flows today for a fully managed WhatsApp No-Code Automation Workflows](https://wali.chat/flows) ⚡✨
+
+## 🚀 Ready to Build WhatsApp Automations?
+
+Get started with step-by-step tutorials and real-world examples:
+
+- **📚 [10+ Complete Tutorials](https://medium.com/search?q=%40walichat+n8n)** - Build AI agents, chatbots, and advanced automations with detailed guides
+- **🎥 [Video Walkthroughs](https://www.youtube.com/@walichat/search?query=n8n)** - Watch live demos and follow along with our YouTube tutorials
+
+**Popular automation ideas:**
+- AI-powered customer support bots
+- Lead qualification workflows
+- Order status notifications
+- Appointment booking systems
+- Multi-language customer support with business-specific trained data
+
+[Start building your first](https://wali.chat) WhatsApp automation in minutes! 💡
+
 ## Contents
 
 - [Requirements](#requirements)

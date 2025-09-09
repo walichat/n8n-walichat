@@ -533,13 +533,15 @@ export class WaliChatTrigger implements INodeType {
           return response.data.url === webhookUrl;
         } catch (error) {
           // Delete all workflow specific webhooks
-          try {
-            await rawRequest({
-              url: `/webhooks/600f1c2a9b3d4e5f6a7b8c00?workflow=${workflowId}`,
-              method: 'DELETE'
-            }, apiKey);
-          } catch (error: any) {
-            console.error(`Error checking WaliChat webhook existence:`, error.message);
+          if (webhookId) {
+            try {
+              await rawRequest({
+                url: `/webhooks/${webhookId}`,
+                method: 'DELETE'
+              }, apiKey);
+            } catch (error: any) {
+              console.error(`Error deleting existing webhook existence:`, error.message);
+            }
           }
           if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
             return false;
