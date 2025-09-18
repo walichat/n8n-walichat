@@ -201,7 +201,7 @@ export const messageProperties: INodeProperties[] = [
     },
     typeOptions: {
       maxLength: 50,
-      loadOptionsMethod: 'getChannels',
+      loadOptionsMethod: 'getDeviceChannels',
     },
   },
   {

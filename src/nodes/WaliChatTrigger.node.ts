@@ -533,20 +533,19 @@ export class WaliChatTrigger implements INodeType {
           return response.data.url === webhookUrl;
         } catch (error) {
           // Delete all workflow specific webhooks
-          if (webhookId) {
-            try {
-              await rawRequest({
-                url: `/webhooks/${webhookId}`,
-                method: 'DELETE'
-              }, apiKey);
-            } catch (error: any) {
-              console.error(`Error deleting existing webhook existence:`, error.message);
-            }
+          try {
+            await rawRequest({
+              url: `/webhooks/${webhookId}`,
+              method: 'DELETE'
+            }, apiKey);
+          } catch (error: any) {
+            console.error(`Error deleting existing webhook existence:`, webhookId, error.message, error.response?.data);
           }
           if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
             return false;
           }
-          throw error;
+          return false;
+          // throw error;
         }
       },
 
@@ -604,7 +603,7 @@ export class WaliChatTrigger implements INodeType {
             if (error.response.status === 409) {
               return true;
             }
-            throw new Error(`WaliChat webhook registration failed: ${error.response.data?.message || error.message}`);
+            throw new Error(`WaliChat webhook registration failed: ${device || "(no device)"} ${error.response.data?.message || error.message}`);
           }
           throw error;
         }
@@ -637,9 +636,9 @@ export class WaliChatTrigger implements INodeType {
             return true;
           }
           if (axios.isAxiosError(error) && error.response) {
-            console.error(`WaliChat webhook deletion failed: ${error.response.data?.message || error.message}`);
+            console.error(`WaliChat webhook deletion failed: ${webhookId} ${error.response.status || '<no status>'} ${error.response.data?.message || error.message}`);
           } else {
-            console.error('Error deleting WaliChat webhook:', error);
+            console.error('Error deleting WaliChat webhook:', webhookId, error);
           }
           return true;
         }
